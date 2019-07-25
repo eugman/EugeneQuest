@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -13,19 +13,15 @@ class User(db.Model):
 class Daily(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
-    completed = db.Column(db.Boolean, nullable = False)
+    completed = db.Column(db.Boolean, default = False, nullable = False)
     user = db.Integer, db.ForeignKey('user.id', nullable = False)
 
 @app.route('/')
 def index():
     output = "<html><head></head><body><ul>"
     dailies = Daily.query.all()
-    for daily in dailies:
-        output += "<li>"+daily.name+"</li>"
 
-    output +="</body></html>"
-
-    return output
+    return render_template("index.html", dailies = dailies)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

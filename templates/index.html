@@ -1,0 +1,16 @@
+<html>
+	<head>
+		<title>
+			EugeneQuest
+		</title>
+	</head>
+	<body>
+		<ul>
+			{% for daily in dailies %}
+			<li>
+				{{daily.name}}
+			</li>
+			{% endfor %}
+		</ul>
+	</body>
+</html>
