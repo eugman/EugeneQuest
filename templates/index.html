@@ -1,16 +1,39 @@
-<html>
-	<head>
-		<title>
-			EugeneQuest
-		</title>
-	</head>
-	<body>
-		<ul>
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Eugene Quest</h1>
 			{% for daily in dailies %}
-			<li>
-				{{daily.name}}
-			</li>
+			<div class="row">
+				<div class="col-md-4 success">
+				{{daily.name}} - {{daily.completed}}
+				</div>
+				<div class="col-md-2">
+				<form method="POST">
+				<input type="hidden" name="daily_id" value="{{daily.id}}">
+				<input type="hidden" name="complete" value="1">
+				<button class="btn btn-success">Complete</button>
+				</form>
+				</div>
+				<div class="col-md-2">
+				<form method="POST">
+				<input type="hidden" name="daily_id" value="{{daily.id}}">
+				<input type="hidden" name="delete_daily" value="1">
+				<button class="btn btn-warning">Delete</button>
+				</div>
+				</form>
+			</div>
 			{% endfor %}
-		</ul>
-	</body>
-</html>
+
+		<br />
+
+		<form method="POST">
+			<input type="text" name="new_daily" />
+			<button class="btn btn-default">Add daily</button>
+		<form>
+		<br />
+		<form method="POST">
+			<input type="hidden" name="reset_dailies" value="1" />
+			<button>Reset dailies</button>
+		</form>
+{% endblock %}
