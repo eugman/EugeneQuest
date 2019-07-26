@@ -23,7 +23,7 @@ class Daily(db.Model):
     availableAfter = db.Column(db.Integer, nullable = False, default = 0)
     availableUntil = db.Column(db.Integer, nullable = False, default = 24)
     completed = db.Column(db.Boolean, default = False, nullable = False)
-    user = db.Integer, db.ForeignKey('user.id', nullable = False)
+    user = db.Integer, db.ForeignKey('user.id', nullable = False, default = 1)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -36,8 +36,7 @@ def index():
 
     if result.get("delete_daily"):
         daily_id = result.get("daily_id")
-        daily = db.session.delete(Daily).where(daily_id)   
-        daily.completed = True
+        Daily.query.filter_by(id = daily_id).delete()
         db.session.commit()
 
     if result.get("reset_dailies"):
@@ -50,7 +49,7 @@ def index():
         db.session.commit()
        
 
-    dailies = Daily.query.all()
+    dailies = Daily.query.order_by("availableAfter", "availableUntil").all()
 
     return render_template("index.html", dailies = dailies)
 
