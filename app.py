@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
@@ -25,6 +26,16 @@ class Daily(db.Model):
     completed = db.Column(db.Boolean, default = False, nullable = False)
     user = db.Integer, db.ForeignKey('user.id', nullable = False, default = 1)
 
+@app.route('/add', methods=['GET', 'POST'])
+def add():
+    result = request.form
+
+    if result.get("new_daily"):
+        db.session.add(Daily(name=result.get("new_daily")))
+        db.session.commit()
+
+    return render_template("add.html")
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = request.form
@@ -43,15 +54,13 @@ def index():
         Daily.query.update({Daily.completed: False})
         db.session.commit()
         
-
-    if result.get("new_daily"):
-        db.session.add(Daily(name=result.get("new_daily")))
-        db.session.commit()
        
+    hour = datetime.datetime.now().hour
 
-    dailies = Daily.query.order_by("availableAfter", "availableUntil").all()
+    openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).order_by("availableAfter", "availableUntil").all()
+    completedDailies = Daily.query.filter_by(completed=True).order_by("availableAfter", "availableUntil").all()
 
-    return render_template("index.html", dailies = dailies)
+    return render_template("index.html", dailies = openDailies, completed = completedDailies)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Eugene Quest</h1>
+<div class="row">
+	<div class="col-md-5">
+		<h2>Add quest</h2>
+		<div class="form-group">
+			<form method="POST" class="form-horizontal">
+				<label for="new_daily">Name:</label><input type="text" class="form-control"  name="new_daily" /><br />
+				<label>Subtype</label>
+				<select class="form-control">
+					<option>General</option>
+					<option>Blood Sugar</option>
+				</select> <br />
+				<label for="availableAfter">Available after: </label>
+				<input type"number" class="form-control"  name"availableAfter" value="0" /> <br />
+				<label for="avaialbleUntil">Avaialble until:</label>
+				<input type"number" class="form-control"  name"availableUntil" value="24" /> <br />
+
+				<button class="btn btn-default">Add daily</button>
+				<form>
+		</div>
+	</div>
+</div>
+<br />
+{% endblock %}
