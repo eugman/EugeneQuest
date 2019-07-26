@@ -98,7 +98,7 @@ def add():
 
 
 @app.route('/exercise', methods=['GET', 'POST'])
-def index():
+def exercise():
     result = request.form
     if result.get("update"):
         daily_id = result.get("exercise_id")
