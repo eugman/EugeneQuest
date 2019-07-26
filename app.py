@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -25,6 +25,36 @@ class Daily(db.Model):
     availableUntil = db.Column(db.Integer, nullable = False, default = 24)
     completed = db.Column(db.Boolean, default = False, nullable = False)
     user = db.Integer, db.ForeignKey('user.id', nullable = False, default = 1)
+
+    def json(self):
+        return '{"name": "' + self.name + '",\n"id":'+str(self.id)+'}'
+
+
+@app.route('/api/openquests')
+def openquests():
+    output = "["
+    hour = datetime.datetime.now().hour
+    openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).order_by("availableAfter", "availableUntil").all()
+
+
+    for daily in openDailies:
+        output += daily.json() + ',\n'
+
+    output = output[:-2] + "]"
+
+    return Response(output, mimetype='application/json')
+
+@app.route('/api/complete', methods=['GET', 'POST'])
+def complete():
+    result = request.form
+    if result.get("complete"):
+        daily_id = result.get("daily_id")
+        daily = db.session.query(Daily).get(daily_id)   
+        daily.completed = True
+        db.session.commit()
+
+
+
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
