@@ -7,12 +7,18 @@
 		<h2>Exercises</h2>
 		<table class="table table-striped">
 			{% for exercise in exercises %}
-			<tr >
+			<tr class={% if exercise.completed%}table-success{% endif %}>
 				<td>
-					<h3>{{exercise.name}}</h3>
+					<h3>{{exercise.reps}} {{exercise.name}}</h3>
+					</form>
 				</td>
 				<td>
-					{{exercise.reps}} reps
+					<form method="POST">
+						<input type="hidden" name="exercise_id" value="{{exercise.id}}" />
+						<button name="increase" value="1" class="btn btn-success">+</button>
+						<button name="same" value="1" class="btn btn-primary">=</button>
+						<button name="decrease" value="1" class="btn btn-warning">-</button>
+					</form>
 				</td>
 				<td>
 					{% if exercise.weight %}

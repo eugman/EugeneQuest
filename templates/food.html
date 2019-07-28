@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Eugene Quest</h1>
+<div class="progress">
+	<div class="progress-bar {{stats.color}}" role="progressbar"  aria-valuemin="0" aria-valuemax="{{ stats.max }}" style="width: {{stats.percent}}%">{{stats.carbs}} / {{stats.max}}</div>
+</div>
+
+<div class="row">
+	<div class="col-md-5">
+		<h2>Log food</h2>
+		<div class="form-group">
+			<form method="POST" class="form-horizontal">
+				<input type="hidden" name="logfood" value="1" />
+				<select name="food_id">
+					{% for food in foods %}
+					<option value="{{food.id}}">{{food.name}}</option>
+					{% endfor %}
+					<option value=""></option>
+				</select>
+				<button class="btn btn-primary">Log food</button> <br /> <br />
+				<label for="name">Name:</label><input type="text" class="form-control"  name="name" /><br />
+				<label for="carbs">carbs: </label>
+				<input type"number" class="form-control"  name="carbs" value="15" /> <br />
+
+				<form>
+		</div>
+	</div>
+
+	<div class="col-md-7 border">
+		<h2>Food Log</h2>
+		<table class="table table-striped">
+			{% for log in logs %}
+			<tr class="{% if log.carbs < 60 %}success{% endif %}">
+				<td>
+					<h3>{{log.name}}</h3>
+				</td>
+				<td>
+					Carbs: {{log.carbs}}
+				</td>
+				{% endfor %}
+		</table>
+	</div>
+
+
+</div>
+<br />
+{% endblock %}

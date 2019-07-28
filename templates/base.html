@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<title>
-			{{title}}
+			EugeneQuest!
 		</title>
 
 		<meta charset="utf-8">
@@ -28,10 +28,30 @@
 					<li class="nav-item active">
 						<a class="nav-link" href="/exercise">Exercise</a>
 					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="/food">Food</a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="/BG">BG</a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="/cbt">CBT</a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="/shop">Shop</a>
+					</li>
+				</ul>
+				<div class="progress" style="width: 10%; margin-top 10px">
+					<div class="progress-bar"  style="width: {{player.percent()}}"></div>
+				</div>
+				<div class="navbar-text">
+					{{player.cash()}} - {{player.percent()}}
+				</div>
 			</div>
 		</nav>
 		<div class="container">
-			{% block content %}{% endblock %}
-			<div>
+			{% block content %}
+			{% endblock %}
+		</div>
 	</body>
 </html>
