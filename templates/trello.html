@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="row">
+	<div class="col-md-7 border">
+		<h2>Trello cards</h2>
+		<table class="table table-striped">
+			{% for card in cards %}
+			<tr >
+				<td>
+					<h3><a href="{{card.shortUrl}}">{{card.name}}</a></h3>
+					</form>
+				</td>
+				<td>
+					<form method="POST">
+						<input type="hidden" name="name" value="{{card.name}}">
+						<button class="btn btn-success" name="complete" value="1">Complete</button>
+					</form>
+				</td>
+				{% endfor %}
+		</table>
+	</div>
+</div>
+{% endblock %}

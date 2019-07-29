@@ -5,10 +5,12 @@ if sys.version_info[0] < 3:
     exit()
 
 import datetime
+import re
 from decimal import Decimal
 from config import *
 from flask import Flask, render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
+from trello import TrelloApi
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -96,6 +98,34 @@ class FoodLog(db.Model):
     name = db.Column(db.String, nullable = False)
     carbs = db.Column(db.Integer,  nullable = False)
     when = db.Column(db.DateTime, default=datetime.datetime.now)
+
+class Boardgame(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable = False)
+    lastPlayed = db.Column(db.DateTime)
+    #minPlayers
+    #boardgame subcategory / expansion ???
+    #maxPlayers
+    #isCoop
+    #Player type: 2 player, 3-5, party
+    #    bggid
+    #play time
+    #iswallofshame
+    #Eugene rating
+    #annie rating
+    #genre - eurogame, ameritash, party game
+
+class BoardgameLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable = False)
+    boardgame_id = db.Column(db.Integer,  nullable = False)
+    when = db.Column(db.DateTime, default=datetime.datetime.now)
+    #notes
+    #number of players
+    #winner
+    #eugenepoints
+    #annie points
+
 
 
 class Daily(db.Model):
@@ -274,10 +304,26 @@ def shop():
 
 @app.route('/trello', methods=['GET', 'POST'])
 def trello():
+    result = request.form
     player = db.session.query(Player).get(1)
+ 
+    if result.get("complete"):
+        name = result.get("name")
+        m = re.search("\((.+)\)", name)
+        if m:
+            points = Decimal(m.group(1))
+        else:
+            points = Decomail("0.25")
 
-    items = Item.query.all()
-    return render_template("shop.html", items = items, player = player)
+        addPoints(db, points, "Trello task: "+name)
+
+
+ 
+    trello = TrelloApi(TRELLO_KEY)
+    trello.set_token(TRELLO_TOKEN)
+    cards = trello.lists.get_card(HOME_WEEK_LIST)
+    cards += trello.lists.get_card(WORK_WEEK_LIST)
+    return render_template("trello.html",cards = cards, player = player)
 
 @app.route('/exercise', methods=['GET', 'POST'])
 def exercise():
