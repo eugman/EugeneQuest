@@ -14,8 +14,8 @@ app.db.create_all()
 
 app.db.session.add(app.Player(points=0))
 
-if os.path.exists("dailies.csv"):
-    with open('dailies.csv', newline='') as csvfile:
+if os.path.exists("data/dailies.csv"):
+    with open('data/dailies.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         linecount = 0
         for row in spamreader:
@@ -24,8 +24,8 @@ if os.path.exists("dailies.csv"):
             linecount += 1
 app.db.session.commit()
 
-if os.path.exists("foods.csv"):
-    with open('foods.csv', newline='') as csvfile:
+if os.path.exists("data/foods.csv"):
+    with open('data/foods.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         linecount = 0
         for row in spamreader:
@@ -35,13 +35,23 @@ if os.path.exists("foods.csv"):
 app.db.session.commit()
 
 
-if os.path.exists("exercises.csv"):
-    with open('exercises.csv', newline='') as csvfile:
+if os.path.exists("data/exercises.csv"):
+    with open('data/exercises.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         linecount = 0
         for row in spamreader:
             if linecount > 0:
                 app.db.session.add(app.Exercise(name=row[0],reps=row[1],weight=row[2]))
+            linecount += 1
+app.db.session.commit()
+
+if os.path.exists("data/items.csv"):
+    with open('data/items.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        linecount = 0
+        for row in spamreader:
+            if linecount > 0:
+                app.db.session.add(app.Item(name=row[0],cost=row[1]))
             linecount += 1
 app.db.session.commit()
 

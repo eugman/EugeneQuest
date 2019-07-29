@@ -5,6 +5,8 @@ if sys.version_info[0] < 3:
     exit()
 
 import datetime
+from decimal import Decimal
+from config import *
 from flask import Flask, render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,10 +15,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-def addPoints(db, points: int) -> None:
+def addPoints(db, points: Decimal, message: str = "No message set") -> None:
     player = db.session.query(Player).get(1)   
     player.points += points
     db.session.commit()
+
+
+    db.session.add(PointsLog(points=points, message = message))
+    db.session.commit()
+
 
 
 #########################################################
@@ -24,16 +31,25 @@ def addPoints(db, points: int) -> None:
 #########################################################
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    points = db.Column(db.Integer)
+    points = db.Column(db.Numeric)
     goal = db.Column(db.Integer, default = 700)
     negThoughts = db.Column(db.Integer, default = 0)
     CBTs = db.Column(db.Integer, default = 0)
 
     def cash(self) -> str:
-        return '${:,.2f}'.format(self.points / 100.0)
+        return '${:,.2f}'.format(self.points / 100)
 
     def percent(self) -> str:
         return '{:,.2f}%'.format(100 * self.points / self.goal)
+
+class CBT(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    A = db.Column(db.String,  nullable = False)
+    B = db.Column(db.String,  nullable = False)
+    C = db.Column(db.String,  nullable = False)
+    D = db.Column(db.String,  nullable = False)
+    E = db.Column(db.String,  nullable = False)
+    when = db.Column(db.DateTime, default=datetime.datetime.now)
 
 
 
@@ -43,10 +59,31 @@ class BG(db.Model):
     insulin = db.Column(db.Integer,  nullable = False)
     when = db.Column(db.DateTime, default=datetime.datetime.now)
 
+    def color(self) -> str:
+        if 80 < self.BG < 120:
+            return "table-success"
+        elif self.BG <= 160:
+            return "table-warning"
+        else:
+            return "table-danger"
+
 class WeightLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     weight = db.Column(db.Integer,  nullable = False)
     when = db.Column(db.DateTime, default=datetime.datetime.now)
+
+class PointsLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    points = db.Column(db.Numeric,  nullable = False)
+    message = db.Column(db.String,  nullable = False)
+    when = db.Column(db.DateTime, default=datetime.datetime.now)
+
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Integer,  nullable = False)
+    cost = db.Column(db.Integer, nullable=False)
+    purchased = db.Column(db.Boolean, default=False)
 
 
 class Food(db.Model):
@@ -177,7 +214,7 @@ def food():
 
         else:
             name = result.get("name")
-            carbs = result.get("carbs")
+            carbs = int(result.get("carbs") or 0)
 
 
         db.session.add(FoodLog(name=name,carbs =carbs))
@@ -193,19 +230,72 @@ def food():
 
     return render_template("food.html", logs=logs, stats=stats, foods = foods, player = player)
 
+@app.route('/cbt', methods=['GET', 'POST'])
+def CBT_route():
+    player = db.session.query(Player).get(1)
 
+    result = request.form
+    if result.get("neg"):
+        player.negThoughts +=1
+        db.session.commit()
+
+        addPoints(db, Decimal(0.1))
+ 
+    if result.get("CBT"):
+        A = result.get("A")
+        B = result.get("B")
+        C = result.get("C")
+        D = result.get("D")
+        E = result.get("E")
+
+        db.session.add(CBT(A=A, B=B, C=C, D=D, E=E))
+        
+        db.session.commit()
+
+        addPoints(db, 1)
+    
+
+    CBTs = []
+    return render_template("cbt.html", CBTs = CBTs, player = player)
+
+@app.route('/bg', methods=['GET', 'POST'])
+def BG_route():
+    player = db.session.query(Player).get(1)
+
+    BGs = BG.query.order_by(BG.when.desc()).all()
+    return render_template("bg.html", BGs = BGs, player = player)
+
+@app.route('/shop', methods=['GET', 'POST'])
+def shop():
+    player = db.session.query(Player).get(1)
+
+    items = Item.query.all()
+    return render_template("shop.html", items = items, player = player)
+
+@app.route('/trello', methods=['GET', 'POST'])
+def trello():
+    player = db.session.query(Player).get(1)
+
+    items = Item.query.all()
+    return render_template("shop.html", items = items, player = player)
 
 @app.route('/exercise', methods=['GET', 'POST'])
 def exercise():
     player = db.session.query(Player).get(1)
 
     result = request.form
-    print(result.get("increase"))
     if result.get("increase"):
         exercise_id = result.get("exercise_id")
         exercise = db.session.query(Exercise).get(exercise_id)   
+        
+        if exercise.name in ["Jumping jacks", "Wall sit", "Plank"]:
+            reps = 5
+        else:
+            reps = 1
+        
         exercise.completed = True
-        exercise.reps += 1
+        exercise.lastCompleted = datetime.datetime.now()
+        exercise.reps += reps
         db.session.commit()
 
         addPoints(db, 2)
@@ -214,14 +304,20 @@ def exercise():
         exercise_id = result.get("exercise_id")
         exercise = db.session.query(Exercise).get(exercise_id)   
         exercise.completed = True
+        exercise.lastCompleted = datetime.datetime.now()
         db.session.commit()
 
         addPoints(db, 1)
     if result.get("decrease"):
         exercise_id = result.get("exercise_id")
         exercise = db.session.query(Exercise).get(exercise_id)   
+        if exercise.name in ["Jumping jacks", "Wall sit", "Plank"]:
+            reps = 5
+        else:
+            reps = 1
         exercise.completed = True
-        exercise.reps -= 1
+        exercise.lastCompleted = datetime.datetime.now()
+        exercise.reps -= reps
         db.session.commit()
 
         addPoints(db, 1)
@@ -248,6 +344,8 @@ def index():
         addPoints(db, daily.points)
 
         if result.get("bg"):
+            if 80 < int(result.get("bg")) < 140:
+                addPoints(db, 5)
             db.session.add(BG(BG=result.get("bg"), insulin=result.get("insulin")))
             db.session.commit()
 

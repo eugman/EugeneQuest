@@ -1,4 +1,6 @@
 dreamhost.sh
+config.py
+*.csv
 
 #sqlite
 *.db

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="row">
+	<div class="col-md-7 border">
+		<h2>Shop</h2>
+		<table class="table table-striped">
+			{% for item in items %}
+			<tr >
+				<td>
+					<h3>{{item.name}}</h3>
+					</form>
+				</td>
+				<td>
+					{{item.cost}}
+				</td>
+				{% endfor %}
+		</table>
+	</div>
+</div>
+{% endblock %}

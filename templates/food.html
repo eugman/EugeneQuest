@@ -14,15 +14,15 @@
 			<form method="POST" class="form-horizontal">
 				<input type="hidden" name="logfood" value="1" />
 				<select name="food_id">
+					<option value=""></option>
 					{% for food in foods %}
 					<option value="{{food.id}}">{{food.name}}</option>
 					{% endfor %}
-					<option value=""></option>
 				</select>
 				<button class="btn btn-primary">Log food</button> <br /> <br />
-				<label for="name">Name:</label><input type="text" class="form-control"  name="name" /><br />
+				<label for="name">Name:</label><input type="text" class="form-control"  name="name" required /><br />
 				<label for="carbs">carbs: </label>
-				<input type"number" class="form-control"  name="carbs" value="15" /> <br />
+				<input type"number" class="form-control"  name="carbs" value="15" min="0" required/> <br />
 
 				<form>
 		</div>

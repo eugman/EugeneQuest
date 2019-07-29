@@ -23,8 +23,12 @@
 				<td>
 					<form method="POST">
 						{% if daily.subtype == "BG" %}
-						<label for="bg">Blood sugar: </label><input type="number" name="bg" value="100"> <br />
+						<label for="bg">Blood sugar: </label><input type="number" name="bg" value="100" min="30" max="500" required> <br />
 						<label for="insulin">Insulin: </label><input type="number" name="insulin" value=""> <br />
+						{% endif %}
+
+						{% if daily.subtype == "Weight" %}
+						<label for="weight">Weight: </label><input type="number" name="weight" value="256" min="120" max="300" required > <br />
 						{% endif %}
 
 						<input type="hidden" name="daily_id" value="{{daily.id}}">

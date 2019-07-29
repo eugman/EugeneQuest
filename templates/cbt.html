@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="row">
+	<div class="col-md-7 border">
+		<h2>CBT</h2>
+		{{player.negThoughts}} negative thoughts <br/ >
+		<form method="POST">
+			<button name="neg" value="1" class="btn btn-primary">+</button>
+		</form>
+		<table class="table table-striped">
+			{% for bg in CBTs %}
+			<tr class={{bg.color()}}>
+				<td>
+					<h3>{{bg.BG}}</h3>
+					</form>
+				</td>
+				<td>
+					{{bg.when}}
+				</td>
+				{% endfor %}
+		</table>
+	</div>	
+	<div class="col-md-12 border">
+		<h2>ABCDE exercise</h2>
+		<form method="POST">
+			Activating thought: <br />
+			<textarea name="A"></textarea> <br />
+			Belief: <br />
+			<textarea name="B"></textarea> <br />
+			Consequences: <br />
+			<textarea name="C"></textarea> <br />
+			Disputing Thoughts: <br />
+			<textarea name="D"></textarea> <br />
+			Effects: <br />
+			<textarea name="E"></textarea> <br />
+			<button name="CBT" value="1" class="btn btn-primary">Submit form</button>
+		</form>
+	</div>
+
+</div>
+{% endblock %}
