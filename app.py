@@ -372,5 +372,5 @@ def index():
     return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, stats = stats, player = player)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port = PORT)
 
