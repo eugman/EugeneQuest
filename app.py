@@ -103,16 +103,16 @@ class Boardgame(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
     lastPlayed = db.Column(db.DateTime)
-    #minPlayers
+    minPlayers = db.Column(db.Integer,  nullable = False)
+    maxPlayers = db.Column(db.Integer,  nullable = False)
     #boardgame subcategory / expansion ???
-    #maxPlayers
+    eugeneRating = db.Column(db.Integer)
+    annieRating = db.Column(db.Integer)
     #isCoop
     #Player type: 2 player, 3-5, party
     #    bggid
     #play time
     #iswallofshame
-    #Eugene rating
-    #annie rating
     #genre - eurogame, ameritash, party game
 
 class BoardgameLog(db.Model):
@@ -120,8 +120,8 @@ class BoardgameLog(db.Model):
     name = db.Column(db.String, nullable = False)
     boardgame_id = db.Column(db.Integer,  nullable = False)
     when = db.Column(db.DateTime, default=datetime.datetime.now)
-    #notes
-    #number of players
+    notes = db.Column(db.String)
+    no_players = db.Column(db.Integer,  nullable = False)
     #winner
     #eugenepoints
     #annie points
@@ -161,7 +161,6 @@ class Exercise(db.Model):
 class DailyStats():
     def __init__(self, dailies):
         hour = datetime.datetime.now().hour
-        #self.questCount = len(dailies)
         self.completedCount = len(list(filter(lambda x: (x.completed == True), dailies)))
         self.missedCount =  len(list(filter(lambda x: (x.completed == False and hour > x.availableUntil), dailies)))
         self.availableCount =  len(list(filter(lambda x: (hour >= x.availableAfter), dailies)))
@@ -268,8 +267,10 @@ def CBT_route():
     if result.get("neg"):
         player.negThoughts +=1
         db.session.commit()
-
-        addPoints(db, Decimal(0.1))
+        if result.get("distortion"):
+            addPoints(db, Decimal(0.2))
+        else:
+            addPoints(db, Decimal(0.1))
  
     if result.get("CBT"):
         A = result.get("A")
