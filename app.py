@@ -308,22 +308,40 @@ def trello():
     result = request.form
     player = db.session.query(Player).get(1)
  
+    trello = TrelloApi(TRELLO_KEY)
+    trello.set_token(TRELLO_TOKEN)
+    
     if result.get("complete"):
         name = result.get("name")
         m = re.search("\((.+)\)", name)
         if m:
             points = Decimal(m.group(1))
         else:
-            points = Decomail("0.25")
+            points = Decimal("0.25")
 
         addPoints(db, points, "Trello task: "+name)
+        cardid = result.get("id")
+        cardGrouping  = result.get("grouping")
+        
+        if cardGrouping == "Home":
+            done = HOME_DONE_LIST
+        else:
+            done = WORK_DONE_LIST
+
+        trello.cards.update_idList(cardid, done)
+
 
 
  
-    trello = TrelloApi(TRELLO_KEY)
-    trello.set_token(TRELLO_TOKEN)
-    cards = trello.lists.get_card(HOME_WEEK_LIST)
-    cards += trello.lists.get_card(WORK_WEEK_LIST)
+    homeCards = trello.lists.get_card(HOME_WEEK_LIST)
+    workCards = trello.lists.get_card(WORK_WEEK_LIST)
+
+    for card in homeCards:
+        card["grouping"] = "Home"
+    for can in workCards:
+        card["grouping"] = "Work"
+
+    cards = homeCards + workCards
     return render_template("trello.html",cards = cards, player = player)
 
 @app.route('/exercise', methods=['GET', 'POST'])

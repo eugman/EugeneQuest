@@ -14,7 +14,10 @@
 				</td>
 				<td>
 					<form method="POST">
+						<input type="hidden" name="id" value="{{card.id}}">
 						<input type="hidden" name="name" value="{{card.name}}">
+						
+						<input type="hidden" name="grouping" value="{{card.grouping}}">
 						<button class="btn btn-success" name="complete" value="1">Complete</button>
 					</form>
 				</td>
