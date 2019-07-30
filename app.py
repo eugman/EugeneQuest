@@ -338,10 +338,20 @@ def trello():
 
     for card in homeCards:
         card["grouping"] = "Home"
-    for can in workCards:
+    for card in workCards:
         card["grouping"] = "Work"
 
     cards = homeCards + workCards
+
+    for card in cards:
+
+        m = re.search("\((.+)\)", card["name"])
+        if m:
+            card["points"] = float(m.group(1))
+        else:
+            card["points"] = 0.25
+
+    cards = sorted(cards, key = lambda c: c["points"])
     return render_template("trello.html",cards = cards, player = player)
 
 @app.route('/exercise', methods=['GET', 'POST'])
