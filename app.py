@@ -53,6 +53,11 @@ class CBT(db.Model):
     E = db.Column(db.String,  nullable = False)
     when = db.Column(db.DateTime, default=datetime.datetime.now)
 
+class NegThoughtsLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    thoughts = db.Column(db.Integer,  nullable = False)
+    when = db.Column(db.DateTime, default=datetime.datetime.now)
+
 
 
 class BG(db.Model):
