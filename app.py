@@ -142,6 +142,7 @@ class Daily(db.Model):
     completed = db.Column(db.Boolean, default = False, nullable = False)
     completedLast = db.Column(db.DateTime)
     points = db.Column(db.Integer, nullable = False, default = 0)
+    isWork = db.Column(db.Boolean, default = False)
 
     def json(self):
         return '{"name": "' + self.name + '",\n"id":'+str(self.id)+'}'
