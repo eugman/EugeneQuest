@@ -1,5 +1,5 @@
 from app import *
-from app.models import Player, Daily
+from app.models import Player, Daily, NegThoughtsLog
 player = db.session.query(Player).get(1)
 ntl = NegThoughtsLog(thoughts = player.negThoughts)
 

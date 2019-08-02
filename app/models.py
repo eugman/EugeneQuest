@@ -43,6 +43,12 @@ class BG(db.Model):
         else:
             return "table-danger"
 
+class NegThoughtsLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    thoughts = db.Column(db.Integer,  nullable = False)
+    when = db.Column(db.DateTime, default=datetime.datetime.now)
+
+
 class WeightLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     weight = db.Column(db.Integer,  nullable = False)
@@ -125,6 +131,8 @@ class Exercise(db.Model):
     vest = db.Column(db.Boolean, default = False)
     completed = db.Column(db.Boolean, default = False)
 
+    completedLast = db.Column(db.DateTime)
+
     def json(self) -> str:
         return '{"name": "' + self.name + '",\n"id":'+str(self.id)+'}'
 
@@ -163,9 +171,11 @@ class FoodStats():
         #Prorated percent of carbs based on part of day.
         self.curPercent = int(100 * self.carbs / (self.max * thirds / 3))
 
-        if self.curPercent <= 90:
+        if self.curPercent <= 85:
             self.color = "bg-success"
-        elif self.curPercent <= 112:
+        elif self.curPercent <= 100:
+            self.color = "bg-primary"
+        elif self.curPercent <= 115:
             self.color = "bg-warning"
         else:
             self.color = "bg-danger"

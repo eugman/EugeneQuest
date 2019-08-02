@@ -5,6 +5,12 @@ import re
 from flask import  render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from trello import TrelloApi
+from toggl.api_client import TogglClientApi
+
+toggleSettings = {
+        'token': TOGGLE_KEY,
+        'user_agent': 'EugeneQuest'
+        }
 
 
 @app.route('/api/openquests')
@@ -109,6 +115,19 @@ def shop():
     items = Item.query.all()
     return render_template("shop.html", items = items, player = player)
 
+@app.route('/toggl', methods=['GET', 'POST'])
+def toggle():
+    result = request.form
+    player = db.session.query(Player).get(1)
+ 
+    toggl_client = TogglClientApi(toggleSettings)
+    
+    workspaces = toggl_client.get_workspaces()
+
+    print(workspaces)
+    return render_template("toggl.html", player = player)
+
+
 @app.route('/trello', methods=['GET', 'POST'])
 def trello():
     result = request.form
@@ -175,7 +194,7 @@ def exercise():
             reps = 1
         
         exercise.completed = True
-        exercise.lastCompleted = datetime.datetime.now()
+        exercise.completedLast = datetime.datetime.now()
         exercise.reps += reps
         db.session.commit()
 
@@ -185,7 +204,7 @@ def exercise():
         exercise_id = result.get("exercise_id")
         exercise = db.session.query(Exercise).get(exercise_id)   
         exercise.completed = True
-        exercise.lastCompleted = datetime.datetime.now()
+        exercise.completedLast = datetime.datetime.now()
         db.session.commit()
 
         addPoints(db, 1)
@@ -197,7 +216,7 @@ def exercise():
         else:
             reps = 1
         exercise.completed = True
-        exercise.lastCompleted = datetime.datetime.now()
+        exercise.completedLast = datetime.datetime.now()
         exercise.reps -= reps
         db.session.commit()
 
@@ -206,7 +225,7 @@ def exercise():
 
 
 
-    allExercises = Exercise.query.all()
+    allExercises = Exercise.query.order_by("completedLast").all()
 
     return render_template("exercise.html", exercises = allExercises, player = player)
 
