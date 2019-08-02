@@ -7,9 +7,12 @@ from decimal import Decimal
 #########################################################
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    points = db.Column(db.Numeric)
+    points = db.Column(db.Numeric, default = 0)
+    pointsGained = db.Column(db.Numeric, default = 0)
+    prevPointsGained = db.Column(db.Numeric, default = 0)
     goal = db.Column(db.Integer, default = 700)
     negThoughts = db.Column(db.Integer, default = 0)
+    prevNegThoughts = db.Column(db.Integer, default = 0)
     CBTs = db.Column(db.Integer, default = 0)
 
     def cash(self) -> str:
@@ -183,6 +186,7 @@ class FoodStats():
 def addPoints(db, points: Decimal, message: str = "No message set") -> None:
     player = db.session.query(Player).get(1)   
     player.points += points
+    player.pointsGained += points
     db.session.commit()
 
     db.session.add(PointsLog(points=points, message = message))
