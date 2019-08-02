@@ -34,18 +34,37 @@
 						<input type="hidden" name="daily_id" value="{{daily.id}}">
 						<input type="hidden" name="complete" value="1">
 						<button class="btn btn-success"{% if daily.completed %} disabled="disabled"{% endif %}>Complete</button>
-						 {{daily.points}} points
+						{{daily.points}} points
 
 					</form>
-					<!--
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% if dailies|length == 0 %}
+		<span class="text-success">Quests complete!</span>
+		{% endif %}
+		<br /> <br />
+		{% if dailies|length == 0 %}
+		<h2>Side Quests</h2>
+		<table class="table table-striped">
+			{% for daily in sideQuests %}
+			<tr>
+				<td>
+					<h3>{{daily.name}}</h3>
+				</td>
+				<td>
 					<form method="POST">
 						<input type="hidden" name="daily_id" value="{{daily.id}}">
-						<input type="hidden" name="delete_daily" value="1">
-						<button class="btn btn-warning">Delete</button>
-					</form> -->
+						<input type="hidden" name="complete" value="1">
+						<button class="btn btn-success"{% if daily.completed %} disabled="disabled"{% endif %}>Complete</button>
+					</form>
 				</td>
-				{% endfor %}
+			</tr>
+			{% endfor %}
 		</table>
+
+		{% endif %}
 	</div>
 	<div class="col-md-5 border">
 		<h2 class="success">Completed</h2>
@@ -57,7 +76,7 @@
 					<h3>{{daily.name}}</h3>
 				</td>
 			</tr>
-				{% endfor %}
+			{% endfor %}
 		</table> <br /> <br /> <br />
 		<h2 class="warning">Missed</h2>
 		<br />

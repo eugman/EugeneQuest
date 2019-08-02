@@ -2,6 +2,7 @@ from app import app, db
 from app.models import *
 from app.config import *
 import re
+
 from flask import  render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from trello import TrelloApi
@@ -39,6 +40,8 @@ def add():
         db.session.commit()
 
     return render_template("add.html")
+
+
 
 @app.route('/food', methods=['GET', 'POST'])
 def food():
@@ -154,9 +157,6 @@ def trello():
             done = WORK_DONE_LIST
 
         trello.cards.update_idList(cardid, done)
-
-
-
  
     homeCards = trello.lists.get_card(HOME_WEEK_LIST)
     workCards = trello.lists.get_card(WORK_WEEK_LIST)
@@ -262,14 +262,15 @@ def index():
        
     hour = datetime.datetime.now().hour
 
-    allDailies = Daily.query.all()
+    allDailies = Daily.query.filter(Daily.subtype != "Side").all()
     stats = DailyStats(allDailies)
 
-    openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
+    openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype != "Side").order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
+    openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype == "Side").order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
     completedDailies = Daily.query.filter_by(completed=True).order_by("availableAfter", "availableUntil").all()
-    missedDailies = Daily.query.filter_by(completed=False).filter(hour > Daily.availableUntil).order_by("availableAfter", "availableUntil").all()
+    missedDailies = Daily.query.filter_by(completed=False).filter(hour > Daily.availableUntil).filter(Daily.subtype != "Side").order_by("availableAfter", "availableUntil").all()
 
-    return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, stats = stats, player = player)
+    return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, sideQuests = openSideQuests, stats = stats, player = player)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port = PORT)
