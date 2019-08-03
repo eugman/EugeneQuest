@@ -16,9 +16,27 @@
 					<form method="POST">
 						<input type="hidden" name="id" value="{{card.id}}">
 						<input type="hidden" name="name" value="{{card.name}}">
-						
+
 						<input type="hidden" name="grouping" value="{{card.grouping}}">
 						<button class="btn btn-success" name="complete" value="1">Complete</button>
+					</form>
+				</td>
+				{% endfor %}
+		</table><br /><br />
+		<h2>Done Cards</h2>
+		<table class="table table-striped">
+			{% for card in doneCards %}
+			<tr >
+				<td>
+					<h3><a href="{{card.shortUrl}}">{{card.name}}</a></h3>
+					</form>
+				</td>
+				<td>
+					<form method="POST">
+						<input type="hidden" name="id" value="{{card.id}}">
+						<input type="hidden" name="name" value="{{card.name}}">
+
+						<button class="btn btn-success" name="archive" value="1">Archive</button>
 					</form>
 				</td>
 				{% endfor %}

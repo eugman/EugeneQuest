@@ -52,7 +52,7 @@ if os.path.exists("data/items.csv"):
         linecount = 0
         for row in spamreader:
             if linecount > 0:
-                db.session.add(Item(name=row[0],cost=row[1]))
+                db.session.add(Item(name=row[0],cost=row[1],url=row[2]))
             linecount += 1
 db.session.commit()
 

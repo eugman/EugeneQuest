@@ -16,7 +16,7 @@
 				<select name="food_id">
 					<option value=""></option>
 					{% for food in foods %}
-					<option value="{{food.id}}">{{food.name}}</option>
+					<option value="{{food.id}}" {% if food.carbs == -1 %}disabled="disabled"{% endif %}>{{food.name}}</option>
 					{% endfor %}
 				</select>
 				<button class="btn btn-primary">Log food</button> <br /> <br />

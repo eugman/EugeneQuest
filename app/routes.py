@@ -138,7 +138,13 @@ def trello():
  
     trello = TrelloApi(TRELLO_KEY)
     trello.set_token(TRELLO_TOKEN)
-    
+   
+
+    if result.get("archive"):
+        cardid = result.get("id")
+        trello.cards.update_closed( cardid, "true")
+        addPoints(db, Decimal(0.1), "Archived a card")
+
     if result.get("complete"):
         name = result.get("name")
         m = re.search("\((.+)\)", name)
@@ -161,6 +167,9 @@ def trello():
     homeCards = trello.lists.get_card(HOME_WEEK_LIST)
     workCards = trello.lists.get_card(WORK_WEEK_LIST)
 
+    doneCards = trello.lists.get_card(HOME_DONE_LIST)
+    doneCards += trello.lists.get_card(WORK_DONE_LIST)
+
     for card in homeCards:
         card["grouping"] = "Home"
     for card in workCards:
@@ -177,7 +186,8 @@ def trello():
             card["points"] = 0.25
 
     cards = sorted(cards, key = lambda c: c["points"])
-    return render_template("trello.html",cards = cards, player = player)
+    doneCards = sorted(doneCards, key=lambda c: c["dateLastActivity"], reverse = True)
+    return render_template("trello.html",cards = cards, doneCards = doneCards, player = player)
 
 @app.route('/exercise', methods=['GET', 'POST'])
 def exercise():
@@ -196,6 +206,7 @@ def exercise():
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
         exercise.reps += reps
+        exercise.rest = 3
         db.session.commit()
 
         addPoints(db, 2)
@@ -205,6 +216,7 @@ def exercise():
         exercise = db.session.query(Exercise).get(exercise_id)   
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
+        exercise.rest = 2
         db.session.commit()
 
         addPoints(db, 1)
@@ -218,6 +230,7 @@ def exercise():
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
         exercise.reps -= reps
+        exercise.rest = 2
         db.session.commit()
 
         addPoints(db, 1)

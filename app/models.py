@@ -11,9 +11,13 @@ class Player(db.Model):
     pointsGained = db.Column(db.Numeric, default = 0)
     prevPointsGained = db.Column(db.Numeric, default = 0)
     goal = db.Column(db.Integer, default = 700)
+
     negThoughts = db.Column(db.Integer, default = 0)
     prevNegThoughts = db.Column(db.Integer, default = 0)
     CBTs = db.Column(db.Integer, default = 0)
+
+    weight = db.Column(db.Numeric)
+    prevWeight = db.Column(db.Numeric)
 
     def cash(self) -> str:
         return '${:,.2f}'.format(self.points / 100)
@@ -69,6 +73,7 @@ class Item(db.Model):
     name = db.Column(db.Integer,  nullable = False)
     cost = db.Column(db.Integer, nullable=False)
     purchased = db.Column(db.Boolean, default=False)
+    url = db.Column(db.String)
 
 
 class Food(db.Model):
@@ -132,6 +137,8 @@ class Exercise(db.Model):
     sets = db.Column(db.Integer, default = 1)
     weight = db.Column(db.Integer, default = 0)
     vest = db.Column(db.Boolean, default = False)
+    #Days of rest between exercises
+    rest = db.Column(db.Integer, default = 0)
     completed = db.Column(db.Boolean, default = False)
 
     completedLast = db.Column(db.DateTime)

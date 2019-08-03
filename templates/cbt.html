@@ -6,15 +6,23 @@
 	<div class="col-md-7 border">
 		<h2>CBT</h2>
 		<form method="POST">
-		{{player.negThoughts}} negative thoughts 
+			{{player.negThoughts}} / {{player.prevNegThoughts}} negative thoughts 
 		<button name="neg" value="1" class="btn btn-primary">+</button> 
 		<button name="neg" value="10" class="btn btn-primary">+10</button> <br />
 			<label for="distortion">Cognitive distortion</label>
 			<select name="distortion">
 				<option></option>
-				<option>All or nothing thinking</option>
+				<option>All or Nothing Thinking</option>
+				<option>Catastrophising</option>
+				<option>Discounting the Positive</option>
 				<option>Emotional Reasoning</option>
+				<option>Fortune Telling</option>
 				<option>Labeling</option>
+				<option>Mental Filtering</option>
+				<option>Mind Reading</option>
+				<option>Overgeneralization</option>
+				<option>Personalization of Blame</option>
+				<option>Should Thinking</option>
 			</select>
 		</form>
 	</div>	
