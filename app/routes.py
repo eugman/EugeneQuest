@@ -175,7 +175,10 @@ def trello():
     for card in workCards:
         card["grouping"] = "Work"
 
-    cards = homeCards + workCards
+    if not datetime.datetime.today().weekday in (5,6) and 9 <= datetime.datetime.now().hour <= 18:
+        cards = homeCards + workCards
+    else:
+        cards = homeCards
 
     for card in cards:
 
@@ -198,14 +201,9 @@ def exercise():
         exercise_id = result.get("exercise_id")
         exercise = db.session.query(Exercise).get(exercise_id)   
         
-        if exercise.name in ["Jumping jacks", "Wall sit", "Plank"]:
-            reps = 5
-        else:
-            reps = 1
-        
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
-        exercise.reps += reps
+        exercise.reps += exercise.interval
         exercise.rest = 3
         db.session.commit()
 
@@ -223,13 +221,9 @@ def exercise():
     if result.get("decrease"):
         exercise_id = result.get("exercise_id")
         exercise = db.session.query(Exercise).get(exercise_id)   
-        if exercise.name in ["Jumping jacks", "Wall sit", "Plank"]:
-            reps = 5
-        else:
-            reps = 1
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
-        exercise.reps -= reps
+        exercise.reps -= exercise.interval
         exercise.rest = 2
         db.session.commit()
 
@@ -252,9 +246,10 @@ def index():
         daily_id = result.get("daily_id")
         daily = db.session.query(Daily).get(daily_id)   
         daily.completed = True
+        daily.rest = daily.restDuration
         db.session.commit()
 
-        addPoints(db, daily.points)
+        addPoints(db, daily.totalPoints())
 
         if result.get("bg"):
             if 80 < int(result.get("bg")) < 140:
@@ -285,8 +280,6 @@ def index():
     completedDailies = Daily.query.filter_by(completed=True).order_by("availableAfter", "availableUntil").all()
     missedDailies = Daily.query.filter_by(completed=False).filter(hour >= Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
     #missedDailies = Daily.query.filter_by(completed=False).filter(hour > Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
-    print(missedDailies)
-    print(hour)
     return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, sideQuests = openSideQuests, stats = stats, player = player)
 
 if __name__ == '__main__':

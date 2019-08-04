@@ -9,7 +9,7 @@
 			{% for exercise in exercises %}
 			<tr class={% if exercise.rest >= 2%}table-success{% elif exercise.rest == 1%}table-primary{% endif %}>
 				<td>
-					<h3>{{exercise.reps}} {{exercise.name}}</h3>
+					<h3>{{(exercise.reps | round(1)|string).rstrip('.0')}} {{exercise.name}}</h3>
 					</form>
 				</td>
 				<td>

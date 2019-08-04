@@ -21,7 +21,7 @@ if os.path.exists("data/dailies.csv"):
         linecount = 0
         for row in spamreader:
             if linecount > 0:
-                db.session.add(Daily(name=row[0],subtype=row[1],availableAfter=row[2],availableUntil=row[3],points=row[4],isWork=(row[5] == "True")))
+                db.session.add(Daily(name=row[0],subtype=row[1],availableAfter=row[2],availableUntil=row[3],points=row[4],isWork=(row[5] == "True"),restDuration=row[6]))
             linecount += 1
 db.session.commit()
 

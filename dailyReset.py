@@ -15,5 +15,6 @@ player.pointsGained = 0
 Daily.query.update({Daily.completed: False})
 
 db.session.query(Exercise).update({Exercise.rest: Exercise.rest - 1})
+db.session.query(Daily).update({Daily.rest: Daily.rest - 1})
 
 db.session.commit()

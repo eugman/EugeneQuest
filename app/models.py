@@ -111,8 +111,8 @@ class BoardgameLog(db.Model):
     notes = db.Column(db.String)
     no_players = db.Column(db.Integer,  nullable = False)
     #winner
-    #eugenepoints
-    #annie points
+    #eugene score
+    #annie score
 
 
 
@@ -126,20 +126,26 @@ class Daily(db.Model):
     completedLast = db.Column(db.DateTime)
     points = db.Column(db.Integer, nullable = False, default = 0)
     isWork = db.Column(db.Boolean, default = False)
+    rest = db.Column(db.Integer, nullable = False, default = 0)
+    restDuration = db.Column(db.Integer, nullable = False, default = 1)
 
-    def json(self):
+    def totalPoints(self) -> str:
+        return self.points + max(-self.rest / 2, 0)
+
+    def json(self) -> str:
         return '{"name": "' + self.name + '",\n"id":'+str(self.id)+'}'
 
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
-    reps = db.Column(db.Integer, default = 1)
+    reps = db.Column(db.Numeric, default = 1)
     sets = db.Column(db.Integer, default = 1)
     weight = db.Column(db.Integer, default = 0)
     vest = db.Column(db.Boolean, default = False)
     #Days of rest between exercises
     rest = db.Column(db.Integer, default = 0)
     completed = db.Column(db.Boolean, default = False)
+    interval = db.Column(db.Numeric, default = 1)
 
     completedLast = db.Column(db.DateTime)
 
