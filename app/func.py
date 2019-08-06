@@ -22,7 +22,7 @@ def ScoreToLevel(score: float, start: float, end: float, reversed: bool = False)
     return level
 
 def NextGoal(level : float, start: float, end: float, reversed: bool = False) -> float:
-    nextLevel = math.ceil(level + 0.1)
+    nextLevel = math.ceil(level + 0.001)
 
     return LevelToScore(nextLevel, start, end, reversed)
     
