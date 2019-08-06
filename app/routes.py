@@ -6,12 +6,6 @@ import re
 from flask import  render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from trello import TrelloApi
-from toggl.api_client import TogglClientApi
-
-toggleSettings = {
-        'token': TOGGLE_KEY,
-        'user_agent': 'EugeneQuest'
-        }
 
 
 @app.route('/api/openquests')
@@ -80,12 +74,13 @@ def CBT_route():
 
     result = request.form
     if result.get("neg"):
-        player.negThoughts += int(result.get("neg"))
+        neg = int(result.get("neg"))
+        player.negThoughts += neg
         db.session.commit()
         if result.get("distortion"):
-            addPoints(db, Decimal(0.2))
+            addPoints(db, Decimal(0.2) * neg)
         else:
-            addPoints(db, Decimal(0.1))
+            addPoints(db, Decimal(0.1) * neg)
  
     if result.get("CBT"):
         A = result.get("A")
@@ -103,6 +98,14 @@ def CBT_route():
 
     CBTs = []
     return render_template("cbt.html", CBTs = CBTs, player = player)
+
+@app.route('/goals', methods=['GET', 'POST'])
+def goals():
+    player = db.session.query(Player).get(1)
+
+    goals = Goal.query.all()
+    return render_template("goals.html", goals = goals, player = player)
+
 
 @app.route('/bg', methods=['GET', 'POST'])
 def BG_route():
@@ -271,6 +274,7 @@ def index():
     hour = datetime.datetime.now().hour
 
     isWork = 0 if datetime.datetime.today().weekday in (5, 6) else 1
+    print(isWork)
 
     allDailies = Daily.query.filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).all()
     stats = DailyStats(allDailies)

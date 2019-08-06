@@ -35,6 +35,17 @@ if os.path.exists("data/foods.csv"):
             linecount += 1
 db.session.commit()
 
+if os.path.exists("data/goals.csv"):
+    with open('data/goals.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        linecount = 0
+        for row in spamreader:
+            if linecount > 0:
+                db.session.add(Goal(name=row[0],category = row[1], start = row[2], end=row[3],reversedScale=(row[4]=="True"),current=row[5]))
+            linecount += 1
+db.session.commit()
+
+
 
 if os.path.exists("data/exercises.csv"):
     with open('data/exercises.csv', newline='') as csvfile:

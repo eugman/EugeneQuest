@@ -64,6 +64,9 @@
 			{% endfor %}
 		</table>
 
+			{% if sideQuests|length == 0 %}
+			<span class="text-success">Quests complete!</span>
+			{% endif %}
 		{% endif %}
 	</div>
 	<div class="col-md-5 border">

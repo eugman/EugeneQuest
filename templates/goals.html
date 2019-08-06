@@ -4,16 +4,16 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-7 border">
-		<h2>Shop</h2>
+		<h2>Character Sheet</h2>
 		<table class="table table-striped">
-			{% for item in items %}
+			{% for goal in goals %}
 			<tr >
 				<td>
-					<h3><a href="{{item.url}}">{{item.name}}</h3>
-					</form>
+					{{goal.name}} -
+					Level {{goal.level()}}
 				</td>
 				<td>
-					{% if item.id == 1}} {{player.points}} {% endif%}{{item.cost}}
+					Next goal: {{goal.nextGoal()}}
 				</td>
 				{% endfor %}
 		</table>

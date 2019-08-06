@@ -32,7 +32,7 @@
 		<h2>Food Log</h2>
 		<table class="table table-striped">
 			{% for log in logs %}
-			<tr class="{% if log.carbs < 60 %}success{% endif %}">
+			<tr class="{% if log.carbs > 60 %}table-danger{% endif %}">
 				<td>
 					<h3>{{log.name}}</h3>
 				</td>

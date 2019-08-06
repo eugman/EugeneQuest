@@ -1,4 +1,5 @@
 from app import app, db
+from app.func import ScoreToLevel, NextGoal
 import datetime
 from decimal import Decimal
 
@@ -43,8 +44,10 @@ class BG(db.Model):
     when = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def color(self) -> str:
-        if 80 < self.BG < 120:
+        if 90 < self.BG < 120:
             return "table-success"
+        elif 85 < self.BG < 140:
+            return "table-primary"
         elif self.BG <= 160:
             return "table-warning"
         else:
@@ -114,6 +117,20 @@ class BoardgameLog(db.Model):
     #eugene score
     #annie score
 
+class Goal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable = False)
+    category = db.Column(db.String, nullable = False)
+    start = db.Column(db.Integer,  nullable = False)
+    end = db.Column(db.Integer,  nullable = False)
+    reversedScale = db.Column(db.Boolean,  nullable = False)
+    current = db.Column(db.Integer,  nullable = False)
+
+    def level(self) -> str:
+        return "{:,.1f}".format(ScoreToLevel(self.current, self.start, self.end, self.reversedScale))
+
+    def nextGoal(self) -> str:
+        return "{:,.1f}".format(NextGoal(ScoreToLevel(self.current,self.start, self.end, self.reversedScale), self.start, self.end, self.reversedScale))
 
 
 class Daily(db.Model):
