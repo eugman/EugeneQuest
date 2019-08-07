@@ -138,7 +138,7 @@ class Goal(db.Model):
         return "{:,.1f}".format(ScoreToLevel(self.current, self.start, self.end, self.reversedScale))
 
     def nextGoal(self) -> str:
-        return "{:,.1f}".format(NextGoal(ScoreToLevel(self.current,self.start, self.end, self.reversedScale), self.start, self.end, self.reversedScale))
+        return "{:,.1f}".format(NextGoal(ScoreToLevel(self.current,self.start, self.end, self.reversedScale), self.start, self.end, self.reversedScale)).replace(".0","")
 
 
 class Daily(db.Model):
