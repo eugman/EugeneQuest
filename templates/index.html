@@ -73,6 +73,11 @@
 	<div class="col-md-5 border">
 		<h2 class="warning">Missed</h2>
 		<br />
+
+			{% if missed|length == 0 %}
+			<span class="text-success">No missed quests.</span>
+			{% endif %}
+
 		<table class="table table-striped">
 			{% for daily in missed %}
 			<tr class="{% if daily.completed %}success{% endif %}">

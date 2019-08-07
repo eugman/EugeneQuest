@@ -229,6 +229,7 @@ def exercise():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     player = db.session.query(Player).get(1)
+    player.messages = ""
 
     result = request.form
     if result.get("complete"):
@@ -239,11 +240,11 @@ def index():
         daily.rest = daily.restDuration
         db.session.commit()
 
-        addPoints(db, daily.totalPoints())
+        player.messages += addPoints(db, daily.totalPoints())
 
         if result.get("bg"):
             if 80 < int(result.get("bg")) < 140:
-                addPoints(db, 5)
+               player.messages += addPoints(db, 5)
             db.session.add(BG(BG=result.get("bg"), insulin=result.get("insulin")))
             db.session.commit()
 
@@ -261,7 +262,6 @@ def index():
     hour = datetime.datetime.now().hour
 
     isWork = 0 if datetime.datetime.today().weekday in (5, 6) else 1
-    print(isWork)
 
     allDailies = Daily.query.filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).all()
     stats = DailyStats(allDailies)

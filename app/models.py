@@ -129,10 +129,10 @@ class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
     category = db.Column(db.String, nullable = False)
-    start = db.Column(db.Integer,  nullable = False, default = 0)
-    end = db.Column(db.Integer,  nullable = False, default = 100)
+    start = db.Column(db.Numeric,  nullable = False, default = 0)
+    end = db.Column(db.Numeric,  nullable = False, default = 100)
     reversedScale = db.Column(db.Boolean,  nullable = False, default = False)
-    current = db.Column(db.Integer,  nullable = False)
+    current = db.Column(db.Numeric,  nullable = False)
 
     def level(self) -> str:
         return "{:,.1f}".format(ScoreToLevel(self.current, self.start, self.end, self.reversedScale))
@@ -221,7 +221,7 @@ class FoodStats():
         else:
             self.color = "bg-danger"
 
-def addPoints(db, points: Decimal, message: str = "No message set") -> None:
+def addPoints(db, points: Decimal, message: str = "No message set") -> str:
     player = db.session.query(Player).get(1)   
     player.points += points
     player.pointsGained += points
@@ -229,6 +229,8 @@ def addPoints(db, points: Decimal, message: str = "No message set") -> None:
 
     db.session.add(PointsLog(points=points, message = message))
     db.session.commit()
+
+    return ""
 
 
 

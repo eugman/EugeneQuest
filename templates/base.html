@@ -67,6 +67,11 @@
 				</div>
 			</div>
 		</nav>
+		{% if player.messages %}
+		<div class="alert alert-primary" role="alert">
+			{{player.messages}}
+		</div>
+		{% endif %}
 		<div class="container">
 			{% block content %}
 			{% endblock %}
