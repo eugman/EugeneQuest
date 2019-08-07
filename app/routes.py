@@ -220,7 +220,7 @@ def exercise():
 
 
 
-    allExercises = Exercise.query.order_by("completedLast").all()
+    allExercises = Exercise.query.order_by("rest", "completedLast").all()
 
     return render_template("exercise.html", exercises = allExercises, player = player)
 
