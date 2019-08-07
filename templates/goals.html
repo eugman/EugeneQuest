@@ -7,7 +7,7 @@
 		<h2>Character Sheet</h2>
 		<table class="table table-striped">
 			{% for goal in goals %}
-			<tr >
+			<tr class="{%if goal.level() | float >= 5 %}table-success{%elif goal.level() | float >= 3 %}table-primary{% endif %}">
 				<td>
 					{{goal.name}} - current {{goal.current}} -
 					Level {{goal.level()}}

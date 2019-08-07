@@ -89,6 +89,7 @@ def goals():
     player = db.session.query(Player).get(1)
 
     goals = Goal.query.all()
+    goals = sorted(goals, key = lambda x: float(x.level()), reverse = True)
     return render_template("goals.html", goals = goals, player = player)
 
 
