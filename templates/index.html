@@ -71,17 +71,6 @@
 		{% endif %}
 	</div>
 	<div class="col-md-5 border">
-		<h2 class="success">Completed</h2>
-		<br />
-		<table class="table table-striped">
-			{% for daily in completed %}
-			<tr class="{% if daily.completed %}success{% endif %}">
-				<td>
-					<h3>{{daily.name}}</h3>
-				</td>
-			</tr>
-			{% endfor %}
-		</table> <br /> <br /> <br />
 		<h2 class="warning">Missed</h2>
 		<br />
 		<table class="table table-striped">
@@ -101,7 +90,18 @@
 			{% endfor %}
 		</table>
 
-	</div>
+	 <br /> <br /> <br />
+	<h2 class="success">Completed</h2>
+		<br />
+		<table class="table table-striped">
+			{% for daily in completed %}
+			<tr class="{% if daily.completed %}success{% endif %}">
+				<td>
+					{{daily.name}}
+				</td>
+			</tr>
+			{% endfor %}
+		</table>	</div>
 </div>
 <br />
 <h2>Misc</h2>

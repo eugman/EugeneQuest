@@ -234,6 +234,7 @@ def index():
         daily_id = result.get("daily_id")
         daily = db.session.query(Daily).get(daily_id)   
         daily.completed = True
+        daily.completedLast = datetime.datetime.now()
         daily.rest = daily.restDuration
         db.session.commit()
 
@@ -266,7 +267,7 @@ def index():
 
     openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
     openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype == "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
-    completedDailies = Daily.query.filter_by(completed=True).order_by("availableAfter", "availableUntil").all()
+    completedDailies = Daily.query.filter_by(completed=True).order_by("completedLast",Daily.availableAfter.desc()).all()
     missedDailies = Daily.query.filter_by(completed=False).filter(hour >= Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
     #missedDailies = Daily.query.filter_by(completed=False).filter(hour > Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
     return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, sideQuests = openSideQuests, stats = stats, player = player)

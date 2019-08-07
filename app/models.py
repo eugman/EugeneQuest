@@ -129,9 +129,9 @@ class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
     category = db.Column(db.String, nullable = False)
-    start = db.Column(db.Integer,  nullable = False)
-    end = db.Column(db.Integer,  nullable = False)
-    reversedScale = db.Column(db.Boolean,  nullable = False)
+    start = db.Column(db.Integer,  nullable = False, default = 0)
+    end = db.Column(db.Integer,  nullable = False, default = 100)
+    reversedScale = db.Column(db.Boolean,  nullable = False, default = False)
     current = db.Column(db.Integer,  nullable = False)
 
     def level(self) -> str:
