@@ -8,17 +8,17 @@ from decimal import Decimal
 #########################################################
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    points = db.Column(db.Numeric, default = 0)
-    pointsGained = db.Column(db.Numeric, default = 0)
-    prevPointsGained = db.Column(db.Numeric, default = 0)
+    points = db.Column(db.Float, default = 0)
+    pointsGained = db.Column(db.Float, default = 0)
+    prevPointsGained = db.Column(db.Float, default = 0)
     goal = db.Column(db.Integer, default = 700)
 
     negThoughts = db.Column(db.Integer, default = 0)
     prevNegThoughts = db.Column(db.Integer, default = 0)
     CBTs = db.Column(db.Integer, default = 0)
 
-    weight = db.Column(db.Numeric)
-    prevWeight = db.Column(db.Numeric)
+    weight = db.Column(db.Float)
+    prevWeight = db.Column(db.Float)
 
     def cash(self) -> str:
         return '${:,.2f}'.format(self.points / 100)
@@ -74,7 +74,7 @@ class WeightLog(db.Model):
 
 class PointsLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    points = db.Column(db.Numeric,  nullable = False)
+    points = db.Column(db.Float,  nullable = False)
     message = db.Column(db.String,  nullable = False)
     when = db.Column(db.DateTime, default=datetime.datetime.now)
 
@@ -129,10 +129,10 @@ class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
     category = db.Column(db.String, nullable = False)
-    start = db.Column(db.Numeric,  nullable = False, default = 0)
-    end = db.Column(db.Numeric,  nullable = False, default = 100)
+    start = db.Column(db.Float,  nullable = False, default = 0)
+    end = db.Column(db.Float,  nullable = False, default = 100)
     reversedScale = db.Column(db.Boolean,  nullable = False, default = False)
-    current = db.Column(db.Numeric,  nullable = False)
+    current = db.Column(db.Float,  nullable = False)
 
     def level(self) -> str:
         return "{:,.1f}".format(ScoreToLevel(self.current, self.start, self.end, self.reversedScale))
@@ -163,14 +163,14 @@ class Daily(db.Model):
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
-    reps = db.Column(db.Numeric, default = 1)
+    reps = db.Column(db.Float, default = 1)
     sets = db.Column(db.Integer, default = 1)
     weight = db.Column(db.Integer, default = 0)
     vest = db.Column(db.Boolean, default = False)
     #Days of rest between exercises
     rest = db.Column(db.Integer, default = 0)
     completed = db.Column(db.Boolean, default = False)
-    interval = db.Column(db.Numeric, default = 1)
+    interval = db.Column(db.Float, default = 1)
 
     completedLast = db.Column(db.DateTime)
 
