@@ -9,11 +9,11 @@
 			{% for goal in goals %}
 			<tr >
 				<td>
-					{{goal.name}} -
+					{{goal.name}} - current {{goal.current}} -
 					Level {{goal.level()}}
 				</td>
 				<td>
-					Next goal: {{goal.nextGoal()}}
+					Next goal: {{goal.nextGoal() | int}}
 				</td>
 				{% endfor %}
 		</table>

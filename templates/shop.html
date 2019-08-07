@@ -13,7 +13,7 @@
 					</form>
 				</td>
 				<td>
-					{% if item.id == 1}} {{player.points}} {% endif%}{{item.cost}}
+					{% if item.id == 1 %} {{player.points| int}} / {% endif%}{{item.cost}}
 				</td>
 				{% endfor %}
 		</table>
