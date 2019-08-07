@@ -8,32 +8,17 @@ from flask_sqlalchemy import SQLAlchemy
 from trello import TrelloApi
 
 
-@app.route('/api/openquests')
-def openquests():
-    output = "["
-    hour = datetime.datetime.now().hour
-    openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).order_by("availableAfter", "availableUntil").all()
-
-    if len(openDailies) == 0:
-        output += "]"
-    else:
-        for daily in openDailies:
-            output += daily.json() + ',\n'
-
-        output = output[:-2] + "]"
-
-    return Response(output, mimetype='application/json')
-
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+    player = db.session.query(Player).get(1)
     result = request.form
 
     if result.get("new_daily"):
         db.session.add(Daily(name=result.get("new_daily")))
         db.session.commit()
 
-    return render_template("add.html")
+    return render_template("add.html", player = player)
 
 
 
@@ -280,7 +265,7 @@ def index():
     stats = DailyStats(allDailies)
 
     openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
-    openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype == "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
+    openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype == "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
     completedDailies = Daily.query.filter_by(completed=True).order_by("availableAfter", "availableUntil").all()
     missedDailies = Daily.query.filter_by(completed=False).filter(hour >= Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
     #missedDailies = Daily.query.filter_by(completed=False).filter(hour > Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()

@@ -37,6 +37,14 @@ class CBT(db.Model):
 
 
 
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable = False)
+    pages = db.Column(db.Integer,  nullable = False)
+    current = db.Column(db.Integer,  nullable = False, default = 0)
+
+
+
 class BG(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     BG = db.Column(db.Integer,  nullable = False)

@@ -35,6 +35,18 @@ if os.path.exists("data/foods.csv"):
             linecount += 1
 db.session.commit()
 
+if os.path.exists("data/books.csv"):
+    with open('data/books.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        linecount = 0
+        for row in spamreader:
+            if linecount > 0:
+                db.session.add(Book(name=row[0],pages = row[1], current = row[2]:wq
+                    ))
+            linecount += 1
+db.session.commit()
+
+
 if os.path.exists("data/goals.csv"):
     with open('data/goals.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
