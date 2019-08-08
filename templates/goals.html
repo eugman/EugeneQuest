@@ -9,7 +9,7 @@
 			{% for goal in goals %}
 			<tr class="{%if goal.level() | float >= 5 %}table-success{%elif goal.level() | float >= 3 %}table-primary{% endif %}">
 				<td>
-					{{goal.name}} - current {{goal.current}} -
+					<span class=font-weight-bold">{{goal.name}}</span> - current {{goal.current}} -
 					Level {{goal.level()}}
 				</td>
 				<td>
