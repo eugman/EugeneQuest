@@ -255,6 +255,7 @@ def index():
         daily = db.session.query(Daily).get(daily_id)   
         daily.snooze = hour + 2
         db.session.commit()
+        print(hour)
 
     if result.get("reset_dailies"):
         Daily.query.update({Daily.completed: False})
@@ -273,7 +274,7 @@ def index():
     openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.snooze < hour).filter(Daily.subtype == "Side").filter(Daily.rest <= 0).filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
     
     if len(openSideQuests) == 0:
-        openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype == "Side").filter(Daily.rest == 1).filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
+        openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.snooze < hour).filter(Daily.subtype == "Side").filter(Daily.rest == 1).filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
     
     completedDailies = Daily.query.filter_by(completed=True).order_by("completedLast",Daily.availableAfter.desc()).all()
     missedDailies = Daily.query.filter_by(completed=False).filter(hour >= Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
