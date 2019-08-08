@@ -58,7 +58,7 @@
 						</div>
 					</li>
 			</ul>
-				<div class="navbar-text"> {{player.pointsGained | round}} / {{player.prevPointsGained | round}} &nbsp; &nbsp; </div> 
+				<div class="navbar-text"> {{player.pointsGained | int}} / {{player.prevPointsGained | int}} &nbsp; &nbsp; </div> 
 				<div class="progress" style="width: 20%; margin-top 10px">
 					<div class="progress-bar"  style="width: {{player.percent()}}">  </div>
 				</div>
