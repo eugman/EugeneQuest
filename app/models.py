@@ -153,6 +153,7 @@ class Daily(db.Model):
     isWork = db.Column(db.Boolean, default = False)
     rest = db.Column(db.Integer, nullable = False, default = 0)
     restDuration = db.Column(db.Integer, nullable = False, default = 1)
+    snooze = db.Column(db.Integer, nullable = False, default = 0)
 
     def totalPoints(self) -> str:
         return self.points + max(-self.rest / 2, 0)

@@ -13,6 +13,7 @@ player.prevPointsGained = player.pointsGained
 player.pointsGained = 0
 
 Daily.query.update({Daily.completed: False})
+Daily.query.update({Daily.snooze: 0})
 
 db.session.query(Exercise).update({Exercise.rest: Exercise.rest - 1})
 db.session.query(Daily).update({Daily.rest: Daily.rest - 1})
