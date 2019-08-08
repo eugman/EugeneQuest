@@ -138,9 +138,9 @@ def trello():
         name = result.get("name")
         m = re.search("\((.+)\)", name)
         if m:
-            points = Decimal(m.group(1))
+            points = float(m.group(1))
         else:
-            points = Decimal("0.25")
+            points = float("0.25")
 
         addPoints(db, points, "Trello task: "+name)
         cardid = result.get("id")
