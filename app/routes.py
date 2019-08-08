@@ -63,9 +63,9 @@ def CBT_route():
         player.negThoughts += neg
         db.session.commit()
         if result.get("distortion"):
-            addPoints(db, Decimal(0.2) * neg)
+            addPoints(0.2 * neg)
         else:
-            addPoints(db, Decimal(0.1) * neg)
+            addPoints(db, 0.1 * neg)
  
     if result.get("CBT"):
         A = result.get("A")
