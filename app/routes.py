@@ -63,7 +63,7 @@ def CBT_route():
         player.negThoughts += neg
         db.session.commit()
         if result.get("distortion"):
-            addPoints(0.2 * neg)
+            addPoints(db, 0.2 * neg)
         else:
             addPoints(db, 0.1 * neg)
  
@@ -276,9 +276,6 @@ def index():
         db.session.commit()
         
     books = Book.query.all()       
-
-    print(books[0].name)
-    print("book" in books[0].name.lower())
 
     isWork = 0 if datetime.datetime.today().weekday in (5, 6) else 1
 
