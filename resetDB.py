@@ -41,8 +41,7 @@ if os.path.exists("data/books.csv"):
         linecount = 0
         for row in spamreader:
             if linecount > 0:
-                db.session.add(Book(name=row[0],pages = row[1], current = row[2]:wq
-                    ))
+                db.session.add(Book(name=row[0],pages = row[1], current = row[2]))
             linecount += 1
 db.session.commit()
 
