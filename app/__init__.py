@@ -26,7 +26,6 @@ def addPoints(db, points: Decimal, message: str = "No message set") -> None:
     db.session.commit()
 
 from app import models
-from app import routes
-from app import config
+from routes import *
 
 
