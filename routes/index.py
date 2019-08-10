@@ -2,6 +2,7 @@ from app import app, db
 from app.models import *
 from app.config import *
 import re
+from typing import List
 
 from flask import  render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
@@ -77,16 +78,45 @@ def index():
     allDailies = Daily.query.filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).all()
     stats = DailyStats(allDailies)
 
-    openDailies = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by(Daily.points.desc(), "availableAfter", "availableUntil").all()
+    openDailies = getQuests("Main", "Open")
     
     
-    openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.snooze < hour).filter(Daily.subtype == "Side").filter(Daily.rest <= 0).filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
+    openSideQuests = getQuests("Side", "Open", 0)
     
     if len(openSideQuests) == 0:
-        openSideQuests = Daily.query.filter_by(completed=False).filter(Daily.availableAfter <= hour).filter(Daily.availableUntil > hour).filter(Daily.snooze < hour).filter(Daily.subtype == "Side").filter(Daily.rest == 1).filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("rest",Daily.points.desc()).all()
+        openSideQuests = getQuests("Side", "Open", 1)
     
-    completedDailies = Daily.query.filter_by(completed=True).order_by("completedLast",Daily.availableAfter.desc()).all()
-    missedDailies = Daily.query.filter_by(completed=False).filter(hour >= Daily.availableUntil).filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).order_by("availableAfter", "availableUntil").all()
+    completedDailies = getQuests("Main", "Completed")
+    missedDailies = getQuests("Main", "Missed")
     return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, sideQuests = openSideQuests, stats = stats, player = player, books = books)
 
 
+
+def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) -> List[Daily]:
+    """Takes in types of quests and returns a list of dailies."""
+    hour = datetime.datetime.now().hour
+    isWork = datetime.datetime.today().weekday in (5, 6)
+    query = Daily.query
+
+    if subtype == "Main":
+        query = query.filter(Daily.subtype != "Side")
+    else:
+        query = query.filter(Daily.subtype == "Side", Daily.rest <= sideQuestRest)
+
+    if status == "Open":
+        query = query.filter_by(completed = False).filter(Daily.availableAfter <= hour, Daily.availableUntil > hour, Daily.snooze < hour)
+        if subtype == "Main":
+            query = query.order_by(Daily.points.desc(), "availableAfter", "availableUntil")
+        else:
+            query = query.order_by("rest", Daily.points.desc())
+    elif status == "Missed":
+        query.filter_by(completed = False).filter(hour >= Daily.availableUntil)
+        query = query.order_by("availableAfter", "availableUntil")
+    else:
+        query = query.filter_by(completed = True)
+        query = query.order_by("availableAfter", "availableUntil")
+
+    dailies = query.all()
+    dailies = filter(lambda x: x.isWork == False or x.isWork == isWork, dailies)
+    
+    return list(dailies)
