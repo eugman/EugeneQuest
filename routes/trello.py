@@ -43,7 +43,13 @@ def trello():
         trello.cards.update_idList(cardid, done)
  
     homeCards = trello.lists.get_card(HOME_WEEK_LIST)
+    if len(homeCards) == 0:
+        homeCards = trello.lists.get_card(HOME_WEEK_LIST)
+
+
     workCards = trello.lists.get_card(WORK_WEEK_LIST)
+    if len(workCards) == 0:
+        workCards = trello.lists.get_card(WORK_WEEK_LIST)
 
     doneCards = trello.lists.get_card(HOME_DONE_LIST)
     doneCards += trello.lists.get_card(WORK_DONE_LIST)

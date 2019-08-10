@@ -144,7 +144,7 @@ class Goal(db.Model):
 class Daily(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable = False)
-    subtype = db.Column(db.String, nullable = True)
+    subtype = db.Column(db.String, nullable = True, default = "General")
     availableAfter = db.Column(db.Integer, nullable = False, default = 0)
     availableUntil = db.Column(db.Integer, nullable = False, default = 24)
     completed = db.Column(db.Boolean, default = False, nullable = False)

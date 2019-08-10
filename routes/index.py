@@ -84,7 +84,7 @@ def index():
     openSideQuests = getQuests("Side", "Open", 0)
     
     if len(openSideQuests) == 0:
-        openSideQuests = getQuests("Side", "Open", 1)
+        openSideQuests = getQuests("Bonus","Open") + getQuests("Side", "Open", 1)
     
     completedDailies = getQuests("Main", "Completed")
     missedDailies = getQuests("Main", "Missed")
@@ -98,11 +98,15 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
     isWork = datetime.datetime.today().weekday in (5, 6)
     query = Daily.query
 
+    #Filter based on the category of quest
     if subtype == "Main":
-        query = query.filter(Daily.subtype != "Side")
-    else:
+        query = query.filter(Daily.subtype != "Side", Daily.subtype != "Bonus")
+    elif subtype == "Side":
         query = query.filter(Daily.subtype == "Side", Daily.rest <= sideQuestRest)
+    else:
+        query = query.filter(Daily.subtype == "Bonus")
 
+#Filter based on the Status
     if status == "Open":
         query = query.filter_by(completed = False).filter(Daily.availableAfter <= hour, Daily.availableUntil > hour, Daily.snooze < hour)
         if subtype == "Main":
