@@ -75,7 +75,8 @@ def index():
 
     isWork = 0 if datetime.datetime.today().weekday in (5, 6) else 1
 
-    allDailies = Daily.query.filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).all()
+    allDailies = getQuests("Main", "All")
+    #Daily.query.filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).all()
     stats = DailyStats(allDailies)
 
     openDailies = getQuests("Main", "Open")
@@ -112,13 +113,15 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
         if subtype == "Main":
             query = query.order_by(Daily.points.desc(), "availableAfter", "availableUntil")
         else:
-            query = query.order_by("rest", Daily.points.desc())
+            query = query.order_by("rest", Daily.points.desc(), "completedLast")
     elif status == "Missed":
         query = query.filter_by(completed = False).filter(hour >= Daily.availableUntil)
         query = query.order_by("availableAfter", "availableUntil")
-    else:
+    elif status == "Completed":
         query = query.filter_by(completed = True)
         query = query.order_by("availableAfter", "availableUntil")
+    else:
+        pass
 
     dailies = query.all()
     dailies = filter(lambda x: x.isWork == False or x.isWork == isWork, dailies)
