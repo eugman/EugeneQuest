@@ -110,7 +110,7 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
         else:
             query = query.order_by("rest", Daily.points.desc())
     elif status == "Missed":
-        query.filter_by(completed = False).filter(hour >= Daily.availableUntil)
+        query = query.filter_by(completed = False).filter(hour >= Daily.availableUntil)
         query = query.order_by("availableAfter", "availableUntil")
     else:
         query = query.filter_by(completed = True)
