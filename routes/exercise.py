@@ -39,7 +39,7 @@ def exercise():
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
         exercise.reps -= exercise.interval
-        exercise.rest = 2
+        exercise.rest = 3
         db.session.commit()
 
         addPoints(db, 1)
