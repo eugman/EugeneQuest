@@ -105,7 +105,7 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
     elif subtype == "Side":
         query = query.filter(Daily.subtype == "Side", Daily.rest <= sideQuestRest)
     else:
-        query = query.filter(Daily.subtype == "Bonus")
+        query = query.filter(Daily.subtype == "Bonus", Daily.rest <= 0)
 
 #Filter based on the Status
     if status == "Open":
