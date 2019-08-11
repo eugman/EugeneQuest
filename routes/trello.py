@@ -17,6 +17,7 @@ def trello():
     trello = TrelloApi(TRELLO_KEY)
     trello.set_token(TRELLO_TOKEN)
    
+    #Handle user inputs
 
     if result.get("archive"):
         cardid = result.get("id")
@@ -42,14 +43,20 @@ def trello():
 
         trello.cards.update_idList(cardid, done)
  
-    homeCards = trello.lists.get_card(HOME_WEEK_LIST)
+    #get card lists
+
+    homeCards = trello.lists.get_card(HOME_TODAY)
     if len(homeCards) == 0:
         homeCards = trello.lists.get_card(HOME_WEEK_LIST)
+    if len(homeCards) == 0:
+        homeCards = trello.lists.get_card(HOME_NEXT_WEEK)
 
 
-    workCards = trello.lists.get_card(WORK_WEEK_LIST)
+    workCards = trello.lists.get_card(WORK_TODAY)
     if len(workCards) == 0:
         workCards = trello.lists.get_card(WORK_WEEK_LIST)
+    if len(workCards) == 0:
+        workCards = trello.lists.get_card(WORK_NEXT_WEEK)
 
     doneCards = trello.lists.get_card(HOME_DONE_LIST)
     doneCards += trello.lists.get_card(WORK_DONE_LIST)
