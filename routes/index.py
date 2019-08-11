@@ -33,7 +33,10 @@ def index():
     if result.get("bookid") and result.get("page"):
         book_id = result.get("bookid")
         book = db.session.query(Book).get(book_id)
-        book.page = int(result.get("page"))
+        page = int(result.get("page"))
+        book.current = page
+        if page >= book.pages:
+            book.completed = True
         db.session.commit()
 
     if result.get("complete"):
