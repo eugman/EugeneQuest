@@ -15,7 +15,7 @@ def goals():
     if result.get("id"):
         goal_id = int(result.get("id"))
         goal = db.session.query(Goal).get(goal_id)
-        goal.current = int(result.get("current"))
+        goal.current = float(result.get("current"))
 
         db.session.commit()
 
