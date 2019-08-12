@@ -9,8 +9,15 @@
 			{% for goal in goals %}
 			<tr class="{%if goal.level() | float >= 5 %}table-success{%elif goal.level() | float >= 3 %}table-primary{% endif %}">
 				<td>
-					<span class=font-weight-bold">{{goal.name}}</span> - current {{goal.current}} -
+					<span class=font-weight-bold">{{goal.name}}</span> <br>
 					Level {{goal.level()}}
+				</td>
+				<td>
+					<form method="POST">
+						<input type="hidden" name="id" value="{{goal.id}}" />
+						<label for="current">Current</label> <input name="current" type="number" value="{{goal.current}}" />
+						<button class="btn btn-primary">Update</button>
+					</form>
 				</td>
 				<td>
 					Next goal: {{goal.nextGoal() }}
