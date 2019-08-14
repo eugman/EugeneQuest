@@ -150,11 +150,12 @@ class Daily(db.Model):
     completed = db.Column(db.Boolean, default = False, nullable = False)
     completedLast = db.Column(db.DateTime)
     points = db.Column(db.Integer, nullable = False, default = 0)
-    isWork = db.Column(db.Boolean, default = False)
+    isWork = db.Column(db.Integer, nullable = False, default = 0)
     rest = db.Column(db.Integer, nullable = False, default = 0)
     restDuration = db.Column(db.Integer, nullable = False, default = 1)
     snooze = db.Column(db.Integer, nullable = False, default = 0)
     url = db.Column(db.String, default="")
+    streak = db.Column(db.Integer, nullable = False, default = 0)
 
     def totalPoints(self) -> str:
         return self.points + max(-self.rest / 2, 0)
