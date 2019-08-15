@@ -99,7 +99,7 @@ def index():
 def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) -> List[Daily]:
     """Takes in types of quests and returns a list of dailies."""
     hour = datetime.datetime.now().hour
-    isWork = -1 if datetime.datetime.today().weekday in (5, 6) and 9 <= hour <= 18 else 1
+    isWork = 1 if datetime.datetime.today().weekday in (0, 1, 2, 3, 4) and 9 <= hour < 18 else -1
     query = Daily.query
 
     #Filter based on the category of quest
@@ -127,6 +127,6 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
         pass
 
     dailies = query.all()
-    dailies = filter(lambda x: x.isWork == False or x.isWork == isWork, dailies)
+    dailies = filter(lambda x: x.isWork == 0 or x.isWork == isWork, dailies)
     
     return list(dailies)
