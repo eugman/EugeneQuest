@@ -88,7 +88,7 @@ def index():
     openSideQuests = getQuests("Side", "Open", 0)
     
     if len(openSideQuests) == 0:
-        openSideQuests = getQuests("Bonus","Open", 0) + getQuests("Side", "Open", 1)
+        openSideQuests = getQuests("Side", "Open", 1) + getQuests("Bonus","Open", 0) 
 
         if len(openSideQuests) == 0:
             openSideQuests = getQuests("Bonus", "Open", 1)
