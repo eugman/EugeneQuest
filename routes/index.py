@@ -88,7 +88,10 @@ def index():
     openSideQuests = getQuests("Side", "Open", 0)
     
     if len(openSideQuests) == 0:
-        openSideQuests = getQuests("Bonus","Open") + getQuests("Side", "Open", 1)
+        openSideQuests = getQuests("Side", "Open", 1) + getQuests("Bonus","Open", 0) 
+
+        if len(openSideQuests) == 0:
+            openSideQuests = getQuests("Bonus", "Open", 1)
     
     completedDailies = getQuests("Main", "Completed")
     missedDailies = getQuests("Main", "Missed")
@@ -99,7 +102,7 @@ def index():
 def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) -> List[Daily]:
     """Takes in types of quests and returns a list of dailies."""
     hour = datetime.datetime.now().hour
-    isWork = 1 if datetime.datetime.today().weekday() in (0, 1, 2, 3, 4) and 9 <= hour < 18 else -1
+    isWork = 1 if datetime.datetime.today().weekday() in (0, 1, 2, 3, 4) and 9 <= hour < 18 and hour != 12 else -1
     query = Daily.query
 
     #Filter based on the category of quest
@@ -108,7 +111,7 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
     elif subtype == "Side":
         query = query.filter(Daily.subtype == "Side", Daily.rest <= sideQuestRest)
     else:
-        query = query.filter(Daily.subtype == "Bonus", Daily.rest <= 0)
+        query = query.filter(Daily.subtype == "Bonus", Daily.rest <= sideQuestRest)
 
 #Filter based on the Status
     if status == "Open":
