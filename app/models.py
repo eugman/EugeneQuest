@@ -19,6 +19,7 @@ class Player(db.Model):
 
     weight = db.Column(db.Float)
     prevWeight = db.Column(db.Float)
+    vacation = db.Column(db.Boolean, default = 0)
 
     def cash(self) -> str:
         return '${:,.2f}'.format(self.points / 100)
@@ -149,19 +150,29 @@ class Daily(db.Model):
     availableUntil = db.Column(db.Integer, nullable = False, default = 24)
     completed = db.Column(db.Boolean, default = False, nullable = False)
     completedLast = db.Column(db.DateTime)
-    points = db.Column(db.Integer, nullable = False, default = 0)
+    points = db.Column(db.Integer, nullable = False, default = 1)
     isWork = db.Column(db.Integer, nullable = False, default = 0)
     rest = db.Column(db.Integer, nullable = False, default = 0)
     restDuration = db.Column(db.Integer, nullable = False, default = 1)
     snooze = db.Column(db.Integer, nullable = False, default = 0)
     url = db.Column(db.String, default="")
     streak = db.Column(db.Integer, nullable = False, default = 0)
+    vacation = db.Column(db.Boolean, nullable = False, default = 0)
 
     def totalPoints(self) -> str:
         return self.points + max(-self.rest / 2, 0)
 
     def json(self) -> str:
         return '{"name": "' + self.name + '",\n"id":'+str(self.id)+'}'
+
+class Weekly(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String, nullable = False)
+    completed = db.Column(db.Boolean, default = False, nullable = False)
+    completedLast = db.Column(db.DateTime)
+    points = db.Column(db.Integer, nullable = False, default = 1)
+    isWork = db.Column(db.Integer, nullable = False, default = 0)
+    dailyid = db.Column(db.Integer, default = 0)
 
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)

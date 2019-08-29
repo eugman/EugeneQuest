@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Eugene Quest</h1>
+</div>
+<br />
+
+<div class="row">
+	<div class="col-md-7 border">
+		<h2>Quest list</h2>
+		<table class="table table-striped">
+
+			<!-- weeklies -->
+
+			{% for weekly in weeklies %}
+			<tr class="{% if weekly.totalPoints() >= 5 %}table-success{% endif %}">
+				<td>
+					<h3>{{weekly.name}}</h3>
+				</td>
+				<td>
+					<form method="POST">
+						<input type="hidden" name="weekly_id" value="{{weekly.id}}">
+						<input type="hidden" name="complete" value="1">
+						<button class="btn btn-success"{% if weekly.completed %} disabled="disabled"{% endif %}>Complete</button>
+						{{weekly.totalPoints()|int}} points
+
+					</form>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% if weeklies|length == 0 %}
+		<span class="text-success">Quests complete!</span>
+		{% endif %}
+		<br /> <br />
+
+	<!-- Completed -->
+
+	 <br /> <br /> <br />
+	<h2 class="success">Completed</h2>
+		<br />
+		<table class="table table-striped">
+			{% for weekly in completed %}
+			<tr class="{% if weekly.completed %}success{% endif %}">
+				<td>
+					{{weekly.name}}
+				</td>
+			</tr>
+			{% endfor %}
+		</table>	</div>
+</div>
+<br />
+{% endblock %}
