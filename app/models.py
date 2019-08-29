@@ -19,7 +19,7 @@ class Player(db.Model):
 
     weight = db.Column(db.Float)
     prevWeight = db.Column(db.Float)
-    vacation = db.Column(db.Boolean, default = 0)
+    vacation = db.Column(db.Integer, default = 0)
 
     def cash(self) -> str:
         return '${:,.2f}'.format(self.points / 100)
@@ -157,7 +157,7 @@ class Daily(db.Model):
     snooze = db.Column(db.Integer, nullable = False, default = 0)
     url = db.Column(db.String, default="")
     streak = db.Column(db.Integer, nullable = False, default = 0)
-    vacation = db.Column(db.Boolean, nullable = False, default = 0)
+    vacation = db.Column(db.Integer, nullable = False, default = 0)
 
     def totalPoints(self) -> str:
         return self.points + max(-self.rest / 2, 0)
@@ -203,8 +203,12 @@ class DailyStats():
         self.missedCount =  len(list(filter(lambda x: (x.completed == False and hour > x.availableUntil), dailies)))
         self.availableCount =  len(list(filter(lambda x: (hour >= x.availableAfter), dailies)))
         self.questCount = self.availableCount + self.missedCount
-        self.completedPercent = str(int(100.0 * self.completedCount / self.availableCount))
-        self.missedPercent = str(int(100.0 * self.missedCount / self.availableCount))
+        if self.availableCount > 0:
+            self.completedPercent = str(int(100.0 * self.completedCount / self.availableCount))
+            self.missedPercent = str(int(100.0 * self.missedCount / self.availableCount))
+        else:
+            self.completedPercent = 0
+            self.missedPercent = 0
 
 class FoodStats():
     def __init__(self, foodLogs):

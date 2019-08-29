@@ -38,7 +38,7 @@ def getQuests( status:str = "Open") -> List[Weekly]:
     """Takes in types of quests and returns a list of weeklies."""
     hour = datetime.datetime.now().hour
     isWork = 1 if datetime.datetime.today().weekday() in (0, 1, 2, 3, 4) and 9 <= hour < 18 else -1
-    query = weekly.query
+    query = Weekly.query
 
     #Filter based on the Status
     if status == "Open":

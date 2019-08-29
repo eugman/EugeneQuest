@@ -76,30 +76,31 @@ def index():
         
     books = Book.query.all()       
 
-    isWork = 0 if datetime.datetime.today().weekday in (5, 6) else 1
+    vacation = player.vacation
+    print(vacation)
 
-    allDailies = getQuests("Main", "All")
-    #Daily.query.filter(Daily.subtype != "Side").filter(Daily.isWork == isWork or Daily.isWork == 0).all()
+
+    allDailies = getQuests(vacation, "Main", "All")
     stats = DailyStats(allDailies)
 
-    openDailies = getQuests("Main", "Open")
+    openDailies = getQuests(vacation, "Main", "Open")
     
     
-    openSideQuests = getQuests("Side", "Open", 0)
+    openSideQuests = getQuests(vacation, "Side", "Open",  0)
     
     if len(openSideQuests) == 0:
-        openSideQuests = getQuests("Side", "Open", 1) + getQuests("Bonus","Open", 0) 
+        openSideQuests = getQuests(vacation, "Side", "Open",  1) + getQuests(vacation, "Bonus","Open", 0) 
 
         if len(openSideQuests) == 0:
-            openSideQuests = getQuests("Bonus", "Open", 1)
+            openSideQuests = getQuests(vacation, "Bonus", "Open", 1)
     
-    completedDailies = getQuests("Main", "Completed")
-    missedDailies = getQuests("Main", "Missed")
+    completedDailies = getQuests(vacation, "Main", "Completed")
+    missedDailies = getQuests(vacation, "Main", "Missed")
     return render_template("index.html", dailies = openDailies, completed = completedDailies, missed = missedDailies, sideQuests = openSideQuests, stats = stats, player = player, books = books)
 
 
 
-def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) -> List[Daily]:
+def getQuests(vacation:int, subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) -> List[Daily]:
     """Takes in types of quests and returns a list of dailies."""
     hour = datetime.datetime.now().hour
     isWork = 1 if datetime.datetime.today().weekday() in (0, 1, 2, 3, 4) and 9 <= hour < 18 and hour != 12 else -1
@@ -130,6 +131,7 @@ def getQuests(subtype:str = "Main", status:str = "Open", sideQuestRest:int = 0) 
         pass
 
     dailies = query.all()
-    dailies = filter(lambda x: x.isWork == 0 or x.isWork == isWork, dailies)
+    dailies = list(filter(lambda x: x.isWork == 0 or x.isWork == isWork, dailies))
+    dailies = list(filter(lambda x: x.vacation == 0 or x.vacation == vacation, dailies))
     
     return list(dailies)
