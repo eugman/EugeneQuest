@@ -2,13 +2,10 @@
 
 
 {% block content %}
-<h1>Eugene Quest</h1>
-</div>
-<br />
 
 <div class="row">
 	<div class="col-md-7 border">
-		<h2>Quest list</h2>
+		<h2>Weeklies</h2>
 		<table class="table table-striped">
 
 			<!-- weeklies -->
@@ -23,7 +20,7 @@
 						<input type="hidden" name="weekly_id" value="{{weekly.id}}">
 						<input type="hidden" name="complete" value="1">
 						<button class="btn btn-success"{% if weekly.completed %} disabled="disabled"{% endif %}>Complete</button>
-						{{weekly.totalPoints()|int}} points
+						{{weekly.points|int}} points
 
 					</form>
 				</td>
@@ -35,10 +32,10 @@
 		{% endif %}
 		<br /> <br />
 
-	<!-- Completed -->
+		<!-- Completed -->
 
-	 <br /> <br /> <br />
-	<h2 class="success">Completed</h2>
+		<br /> <br /> <br />
+		<h2 class="success">Completed</h2>
 		<br />
 		<table class="table table-striped">
 			{% for weekly in completed %}
@@ -48,7 +45,8 @@
 				</td>
 			</tr>
 			{% endfor %}
-		</table>	</div>
+		</table>	
+	</div>
 </div>
 <br />
 {% endblock %}
