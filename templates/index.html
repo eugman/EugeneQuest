@@ -60,7 +60,7 @@
 		<h4>Side Quests</h4>
 		<table class="table table-striped">
 			{% for daily in sideQuests %}
-			<tr class="{% if daily.totalPoints() >= 5 %}table-success{% elif daily.rest <= -3 %}table-warning{% endif %}">
+			<tr class="{% if daily.rest <= -7%}table-danger{% elif daily.rest <= -3 %}table-warning{% elif daily.totalPoints() >= 5 %}table-success{% endif %}">
 				<td>
 					{% if daily.url %}
 					<a href="{{daily.url}}" target="_blank">
