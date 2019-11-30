@@ -66,7 +66,7 @@ def index():
     if result.get("snooze_daily"):
         daily_id = result.get("daily_id")
         daily = db.session.query(Daily).get(daily_id)   
-        daily.snooze = hour + 2
+        daily.snooze = hour + int(result.get("snooze_daily"))
         db.session.commit()
         print(hour)
 
