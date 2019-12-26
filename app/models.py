@@ -128,8 +128,8 @@ class BoardgameLog(db.Model):
 
 class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable = False)
-    category = db.Column(db.String, nullable = False)
+    name = db.Column(db.String, nullable = False, default = "New Goal")
+    category = db.Column(db.String, nullable = False, default = "STR")
     start = db.Column(db.Float,  nullable = False, default = 0)
     end = db.Column(db.Float,  nullable = False, default = 100)
     reversedScale = db.Column(db.Boolean,  nullable = False, default = False)
@@ -144,7 +144,7 @@ class Goal(db.Model):
 
 class Daily(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable = False)
+    name = db.Column(db.String, nullable = False, default = "New Daily")
     subtype = db.Column(db.String, nullable = True, default = "General")
     availableAfter = db.Column(db.Integer, nullable = False, default = 0)
     availableUntil = db.Column(db.Integer, nullable = False, default = 24)
@@ -155,7 +155,7 @@ class Daily(db.Model):
     rest = db.Column(db.Integer, nullable = False, default = 0)
     restDuration = db.Column(db.Integer, nullable = False, default = 1)
     snooze = db.Column(db.Integer, nullable = False, default = 0)
-    url = db.Column(db.String, default="")
+    url = db.Column(db.String, default = "")
     streak = db.Column(db.Integer, nullable = False, default = 0)
     vacation = db.Column(db.Integer, nullable = False, default = 0)
 
@@ -176,10 +176,10 @@ class Weekly(db.Model):
 
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable = False)
+    name = db.Column(db.String, nullable = False, default = "New Exercise")
     reps = db.Column(db.Float, default = 1)
     sets = db.Column(db.Integer, default = 1)
-    weight = db.Column(db.Integer, default = 0)
+    weight = db.Column(db.Integer, default = 3)
     vest = db.Column(db.Boolean, default = False)
     #Days of rest between exercises
     rest = db.Column(db.Integer, default = 0)
