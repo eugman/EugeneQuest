@@ -31,7 +31,7 @@ def current_exercise():
     currentExercise = allExercises[0]
 
 
-    return str(currentExercise.reps) + " " +currentExercise.name
+    return str(currentExercise.reps) + " " +currentExercise.name + (', ' + str(currentExercise.weight) + " lbs" if currentExercise.weight > 0 else "") + (", vest" if currentExercise.vest else "")
 
 @app.route('/exercise', methods=['GET', 'POST'])
 def exercise():
