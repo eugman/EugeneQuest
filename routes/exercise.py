@@ -6,6 +6,32 @@ import re
 from flask import  render_template, request, Response
 from flask_sqlalchemy import SQLAlchemy
 
+@app.route('/increasecurrentexercise', methods=['GET', 'POST'])
+def increase_current_exercise():
+    allExercises = Exercise.query.filter(Exercise.name != "Running").filter(Exercise.name != "Treadmill - 3.1").filter(Exercise.name != "Mediate").order_by("rest", "completedLast").all()
+    exercise = allExercises[0]
+
+        
+    exercise.completed = True
+    exercise.completedLast = datetime.datetime.now()
+    exercise.reps += exercise.interval
+    exercise.rest = 3
+    db.session.commit()
+
+    addPoints(db, 2)
+
+
+
+    return str(currentExercise.reps) + " " +currentExercise.name
+
+
+@app.route('/currentexercise', methods=['GET', 'POST'])
+def current_exercise():
+    allExercises = Exercise.query.filter(Exercise.name != "Running").filter(Exercise.name != "Treadmill - 3.1").filter(Exercise.name != "Meditate").order_by("rest", "completedLast").all()
+    currentExercise = allExercises[0]
+
+
+    return str(currentExercise.reps) + " " +currentExercise.name
 
 @app.route('/exercise', methods=['GET', 'POST'])
 def exercise():
