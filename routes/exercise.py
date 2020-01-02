@@ -24,6 +24,25 @@ def increase_current_exercise():
 
     return str(currentExercise.reps) + " " +currentExercise.name
 
+@app.route('/decreasecurrentexercise', methods=['GET', 'POST'])
+def decrease_current_exercise():
+    allExercises = Exercise.query.filter(Exercise.name != "Running").filter(Exercise.name != "Treadmill - 3.1").filter(Exercise.name != "Mediate").order_by("rest", "completedLast").all()
+    exercise = allExercises[0]
+
+        
+    exercise.completed = True
+    exercise.completedLast = datetime.datetime.now()
+    exercise.reps -= exercise.interval
+    exercise.rest = 3
+    db.session.commit()
+
+    addPoints(db, 2)
+
+
+
+    return str(currentExercise.reps) + " " +currentExercise.name
+
+
 
 @app.route('/currentexercise', methods=['GET', 'POST'])
 def current_exercise():
