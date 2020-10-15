@@ -7,7 +7,7 @@
 		<h2>Exercises</h2>
 		<table class="table table-striped">
 			{% for exercise in exercises %}
-			<tr class={% if exercise.rest > 4 %}table-secondary{% elif exercise.rest >= 2%}table-success{% elif exercise.rest == 1%}table-primary{% endif %}>
+			<tr class={% if exercise.rest > 4 %}table-secondary{% elif exercise.rest >=3 %} table-warning  {% elif exercise.rest == 2%}table-success{% elif exercise.rest == 1%}table-primary{% endif %}>
 				<td>
 					<h3>{{(exercise.reps | round(1)|string).replace('.0','')}} {{exercise.name}}</h3>
 					</form>
@@ -23,6 +23,12 @@
 				<td>
 					{% if exercise.weight %}
 					{{exercise.weight}} lbs
+					{% endif %}
+					{% if exercise.sets > 1 %}
+					{{exercise.sets}} reps
+					{% endif %}
+					{% if exercise.vest %}
+					 vest
 					{% endif %}
 				</td>
 				{% endfor %}

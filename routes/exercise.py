@@ -11,11 +11,13 @@ def increase_current_exercise():
     allExercises = Exercise.query.filter(Exercise.name != "Running").filter(Exercise.name != "Treadmill - 3.1").filter(Exercise.name != "Mediate").order_by("rest", "completedLast").all()
     exercise = allExercises[0]
 
+    if exercise.rest > 0:
+        return "Took a walk"
         
     exercise.completed = True
     exercise.completedLast = datetime.datetime.now()
     exercise.reps += exercise.interval
-    exercise.rest = 3
+    exercise.rest = 2
     db.session.commit()
 
     addPoints(db, 2)
@@ -29,11 +31,14 @@ def decrease_current_exercise():
     allExercises = Exercise.query.filter(Exercise.name != "Running").filter(Exercise.name != "Treadmill - 3.1").filter(Exercise.name != "Mediate").order_by("rest", "completedLast").all()
     exercise = allExercises[0]
 
+    if exercise.rest > 0:
+        return "Took a walk"
+        
         
     exercise.completed = True
     exercise.completedLast = datetime.datetime.now()
     exercise.reps -= exercise.interval
-    exercise.rest = 3
+    exercise.rest = 2
     db.session.commit()
 
     addPoints(db, 2)
@@ -49,6 +54,8 @@ def current_exercise():
     allExercises = Exercise.query.filter(Exercise.name != "Running").filter(Exercise.name != "Treadmill - 3.1").filter(Exercise.name != "Meditate").order_by("rest", "completedLast").all()
     currentExercise = allExercises[0]
 
+    if currentExercise.rest > 0:
+        return "Go for a walk"
 
     return str(currentExercise.reps) + " " +currentExercise.name + (', ' + str(currentExercise.weight) + " lbs" if currentExercise.weight > 0 else "") + (", vest" if currentExercise.vest else "")
 
@@ -64,7 +71,7 @@ def exercise():
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
         exercise.reps += exercise.interval
-        exercise.rest = 3
+        exercise.rest = 2
         db.session.commit()
 
         addPoints(db, 2)
@@ -84,7 +91,7 @@ def exercise():
         exercise.completed = True
         exercise.completedLast = datetime.datetime.now()
         exercise.reps -= exercise.interval
-        exercise.rest = 3
+        exercise.rest = 2
         db.session.commit()
 
         addPoints(db, 1)
